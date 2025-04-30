@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { 
-  BadRequestException, 
+import {
+  BadRequestException,
   ConflictException,
   HttpException,
-  InternalServerErrorException, 
+  InternalServerErrorException,
   NotFoundException,
-  ServiceUnavailableException
+  ServiceUnavailableException,
 } from '@nestjs/common';
 
 import { UserController } from '../user.controller';
@@ -56,7 +56,9 @@ describe('UserController Network and Unexpected Error Handling', () => {
     });
 
     it('should handle connection reset errors', async () => {
-      const connectionError = new ServiceUnavailableException('Connection reset');
+      const connectionError = new ServiceUnavailableException(
+        'Connection reset',
+      );
       (mockUserRepository.find as jest.Mock).mockRejectedValue(connectionError);
 
       await expect(userController.getUser({ id: mockUser.id })).rejects.toThrow(
@@ -81,11 +83,11 @@ describe('UserController Network and Unexpected Error Handling', () => {
       });
 
       const result = await userController.getUser({ id: mockUser.id });
-      
+
       // Since we're getting incomplete data, we should verify it still has the ID
       expect(result).toHaveProperty('id');
       expect(result.id).toEqual(mockUser.id);
-      
+
       // And missing other fields
       expect(result).not.toHaveProperty('profile');
     });
@@ -114,12 +116,12 @@ describe('UserController Network and Unexpected Error Handling', () => {
       // Instead of using malformed JSON which doesn't fail in our test setup,
       // test that the controller properly passes the request to the service
       (mockUserService.signup as jest.Mock).mockResolvedValue(mockUser);
-      
+
       await userController.signup(mockSignupRequest);
-      
+
       expect(mockUserService.signup).toHaveBeenCalledWith(mockSignupRequest);
     });
-    
+
     it('should handle errors when service returns partial data', async () => {
       // Simulate case where service returns partial data (missing fields)
       (mockUserService.signup as jest.Mock).mockResolvedValue({
@@ -128,13 +130,13 @@ describe('UserController Network and Unexpected Error Handling', () => {
       });
 
       const result = await userController.signup(mockSignupRequest);
-      
+
       // Should still have the ID
       expect(result).toHaveProperty('id');
       expect(result.id).toEqual('new-user-id');
-      
+
       // And missing other fields
       expect(result).not.toHaveProperty('profile');
     });
   });
-}); 
+});

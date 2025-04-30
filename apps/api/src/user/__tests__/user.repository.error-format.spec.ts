@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { 
-  InternalServerErrorException, 
+import {
+  InternalServerErrorException,
   NotFoundException,
-  HttpException
+  HttpException,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
@@ -44,9 +44,9 @@ describe('UserRepository Error Response Format Tests', () => {
         {
           code: 'P2025',
           clientVersion: '4.0.0',
-        }
+        },
       );
-      
+
       mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(notFoundError);
 
       try {
@@ -72,9 +72,9 @@ describe('UserRepository Error Response Format Tests', () => {
           meta: {
             target: ['email'],
           },
-        }
+        },
       );
-      
+
       mockPrismaService.user.create.mockRejectedValue(uniqueConstraintError);
 
       try {
@@ -112,4 +112,4 @@ describe('UserRepository Error Response Format Tests', () => {
       }
     });
   });
-}); 
+});

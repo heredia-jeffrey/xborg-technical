@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { 
-  BadRequestException, 
-  ConflictException, 
+import {
+  BadRequestException,
+  ConflictException,
   HttpException,
-  InternalServerErrorException, 
+  InternalServerErrorException,
   NotFoundException,
-  ServiceUnavailableException
+  ServiceUnavailableException,
 } from '@nestjs/common';
 
 import { UserController } from '../user.controller';
@@ -59,7 +59,7 @@ describe('User API Error Response Format Tests', () => {
         expect(httpError).toBeInstanceOf(HttpException);
         expect(httpError.getStatus()).toBe(400);
         expect(httpError.message).toBe(errorMessage);
-        
+
         const response = httpError.getResponse() as Record<string, any>;
         expect(response).toHaveProperty('statusCode', 400);
         expect(response).toHaveProperty('message', errorMessage);
@@ -80,7 +80,7 @@ describe('User API Error Response Format Tests', () => {
         expect(httpError).toBeInstanceOf(HttpException);
         expect(httpError.getStatus()).toBe(409);
         expect(httpError.message).toBe(errorMessage);
-        
+
         const response = httpError.getResponse() as Record<string, any>;
         expect(response).toHaveProperty('statusCode', 409);
         expect(response).toHaveProperty('message', errorMessage);
@@ -101,7 +101,7 @@ describe('User API Error Response Format Tests', () => {
         expect(httpError).toBeInstanceOf(HttpException);
         expect(httpError.getStatus()).toBe(404);
         expect(httpError.message).toBe(errorMessage);
-        
+
         const response = httpError.getResponse() as Record<string, any>;
         expect(response).toHaveProperty('statusCode', 404);
         expect(response).toHaveProperty('message', errorMessage);
@@ -122,7 +122,7 @@ describe('User API Error Response Format Tests', () => {
         expect(httpError).toBeInstanceOf(HttpException);
         expect(httpError.getStatus()).toBe(500);
         expect(httpError.message).toBe(errorMessage);
-        
+
         const response = httpError.getResponse() as Record<string, any>;
         expect(response).toHaveProperty('statusCode', 500);
         expect(response).toHaveProperty('message', errorMessage);
@@ -143,7 +143,7 @@ describe('User API Error Response Format Tests', () => {
         expect(httpError).toBeInstanceOf(HttpException);
         expect(httpError.getStatus()).toBe(503);
         expect(httpError.message).toBe(errorMessage);
-        
+
         const response = httpError.getResponse() as Record<string, any>;
         expect(response).toHaveProperty('statusCode', 503);
         expect(response).toHaveProperty('message', errorMessage);
@@ -154,12 +154,12 @@ describe('User API Error Response Format Tests', () => {
     it('should handle custom error properties in exceptions', async () => {
       const errorMessage = 'Validation failed';
       const validationErrors = ['Field1 is required', 'Field2 is invalid'];
-      
+
       const exception = new BadRequestException({
         message: errorMessage,
-        errors: validationErrors
+        errors: validationErrors,
       });
-      
+
       (mockUserService.signup as jest.Mock).mockRejectedValue(exception);
 
       try {
@@ -169,11 +169,11 @@ describe('User API Error Response Format Tests', () => {
         const httpError = error as HttpException;
         expect(httpError).toBeInstanceOf(HttpException);
         expect(httpError.getStatus()).toBe(400);
-        
+
         const response = httpError.getResponse() as any;
         expect(response).toEqual({
           message: errorMessage,
-          errors: validationErrors
+          errors: validationErrors,
         });
         expect(response.message).toBe(errorMessage);
         expect(response.errors).toEqual(validationErrors);
@@ -183,7 +183,7 @@ describe('User API Error Response Format Tests', () => {
     it('should generate a proper error response for array of error messages', async () => {
       const errorMessages = ['Username is required', 'Email format is invalid'];
       const exception = new BadRequestException(errorMessages);
-      
+
       (mockUserService.signup as jest.Mock).mockRejectedValue(exception);
 
       try {
@@ -193,7 +193,7 @@ describe('User API Error Response Format Tests', () => {
         const httpError = error as HttpException;
         expect(httpError).toBeInstanceOf(HttpException);
         expect(httpError.getStatus()).toBe(400);
-        
+
         const response = httpError.getResponse() as Record<string, any>;
         expect(response).toHaveProperty('statusCode', 400);
         expect(response).toHaveProperty('message');
@@ -201,4 +201,4 @@ describe('User API Error Response Format Tests', () => {
       }
     });
   });
-}); 
+});

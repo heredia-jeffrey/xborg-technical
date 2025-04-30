@@ -12,7 +12,9 @@ import { mockCreateUser, mockUser } from './mocks';
 
 describe('UserRepository Database Error Handling', () => {
   let userRepository: UserRepository;
-  let mockPrismaService: { user: { findUniqueOrThrow: jest.Mock; create: jest.Mock } };
+  let mockPrismaService: {
+    user: { findUniqueOrThrow: jest.Mock; create: jest.Mock };
+  };
 
   beforeEach(async () => {
     // Create a Jest mock for PrismaService with explicit jest.fn() mocks
@@ -40,33 +42,33 @@ describe('UserRepository Database Error Handling', () => {
     it('should handle Prisma client initialization errors', async () => {
       // Simulating an error during prisma client initialization
       mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(
-        new Error('PrismaClientInitializationError')
+        new Error('PrismaClientInitializationError'),
       );
 
       await expect(userRepository.find({ id: mockUser.id })).rejects.toThrow(
-        NotFoundException
+        NotFoundException,
       );
     });
 
     it('should handle Prisma query engine errors', async () => {
       // Simulating a query engine error
       mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(
-        new Error('PrismaClientKnownRequestError')
+        new Error('PrismaClientKnownRequestError'),
       );
 
       await expect(userRepository.find({ id: mockUser.id })).rejects.toThrow(
-        NotFoundException
+        NotFoundException,
       );
     });
 
     it('should handle database connection errors', async () => {
       // Simulating a connection error
       mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(
-        new Error('Could not open connection to database')
+        new Error('Could not open connection to database'),
       );
 
       await expect(userRepository.find({ id: mockUser.id })).rejects.toThrow(
-        NotFoundException
+        NotFoundException,
       );
     });
   });
@@ -75,7 +77,7 @@ describe('UserRepository Database Error Handling', () => {
     it('should correctly return false when database throws errors', async () => {
       // Simulating any prisma error
       mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(
-        new Error('Database error')
+        new Error('Database error'),
       );
 
       const exists = await userRepository.exists({ id: 'invalid-id' });
@@ -85,7 +87,7 @@ describe('UserRepository Database Error Handling', () => {
     it('should handle database protocol errors gracefully', async () => {
       // Simulating a protocol error
       mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(
-        new Error('Protocol error')
+        new Error('Protocol error'),
       );
 
       const exists = await userRepository.exists({ id: mockUser.id });
@@ -107,44 +109,44 @@ describe('UserRepository Database Error Handling', () => {
         error.code = code;
         mockPrismaService.user.create.mockRejectedValueOnce(error);
 
-        await expect(userRepository.create(mockCreateUser as any)).rejects.toThrow(
-          expected
-        );
+        await expect(
+          userRepository.create(mockCreateUser as any),
+        ).rejects.toThrow(expected);
       }
     });
 
     it('should handle database transaction failures', async () => {
       // Simulating a transaction failure
       mockPrismaService.user.create.mockRejectedValue(
-        new Error('Transaction failed')
+        new Error('Transaction failed'),
       );
 
-      await expect(userRepository.create(mockCreateUser as any)).rejects.toThrow(
-        InternalServerErrorException
-      );
+      await expect(
+        userRepository.create(mockCreateUser as any),
+      ).rejects.toThrow(InternalServerErrorException);
       expect(mockPrismaService.user.create).toHaveBeenCalled();
     });
 
     it('should handle database timeout errors during create', async () => {
       // Simulating a timeout error
       mockPrismaService.user.create.mockRejectedValue(
-        new Error('Query execution took too long')
+        new Error('Query execution took too long'),
       );
 
-      await expect(userRepository.create(mockCreateUser as any)).rejects.toThrow(
-        InternalServerErrorException
-      );
+      await expect(
+        userRepository.create(mockCreateUser as any),
+      ).rejects.toThrow(InternalServerErrorException);
     });
 
     it('should handle database out of memory errors', async () => {
       // Simulating an out of memory error
       mockPrismaService.user.create.mockRejectedValue(
-        new Error('Out of memory')
+        new Error('Out of memory'),
       );
 
-      await expect(userRepository.create(mockCreateUser as any)).rejects.toThrow(
-        InternalServerErrorException
-      );
+      await expect(
+        userRepository.create(mockCreateUser as any),
+      ).rejects.toThrow(InternalServerErrorException);
     });
   });
-}); 
+});
