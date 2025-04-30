@@ -43,7 +43,7 @@ describe('PrismaService Integration Tests', () => {
 
     // This will call the constructor which should call mockConfigService.get
     prismaService = moduleRef.get<PrismaService>(PrismaService);
-    
+
     // Mock the database connection methods
     prismaService.$connect = jest.fn().mockResolvedValue(undefined);
     prismaService.$on = jest.fn().mockImplementation((event, callback) => {
@@ -71,8 +71,11 @@ describe('PrismaService Integration Tests', () => {
       await prismaService.enableShutdownHooks(mockApp);
 
       // Assert
-      expect(prismaService.$on).toHaveBeenCalledWith('beforeExit', expect.any(Function));
-      
+      expect(prismaService.$on).toHaveBeenCalledWith(
+        'beforeExit',
+        expect.any(Function),
+      );
+
       // Manually trigger the beforeExit callback to test it closes the app
       const callback = (prismaService as any).beforeExitCallback;
       await callback();
@@ -86,4 +89,4 @@ describe('PrismaService Integration Tests', () => {
       expect(mockConfigService.get).toHaveBeenCalledWith('DATABASE_URL');
     });
   });
-}); 
+});

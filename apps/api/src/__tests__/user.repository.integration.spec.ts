@@ -56,10 +56,10 @@ describe('UserRepository Integration Tests', () => {
     it('should find a user by id successfully', async () => {
       // Arrange
       mockPrismaService.user.findUniqueOrThrow.mockResolvedValue(mockUser);
-      
+
       // Act
       const result = await userRepository.find({ id: '1' });
-      
+
       // Assert
       expect(result).toEqual(mockUser);
       expect(mockPrismaService.user.findUniqueOrThrow).toHaveBeenCalledWith({
@@ -71,10 +71,12 @@ describe('UserRepository Integration Tests', () => {
     it('should find a user by address successfully', async () => {
       // Arrange
       mockPrismaService.user.findUniqueOrThrow.mockResolvedValue(mockUser);
-      
+
       // Act
-      const result = await userRepository.find({ address: '0x123456789abcdef' });
-      
+      const result = await userRepository.find({
+        address: '0x123456789abcdef',
+      });
+
       // Assert
       expect(result).toEqual(mockUser);
       expect(mockPrismaService.user.findUniqueOrThrow).toHaveBeenCalledWith({
@@ -85,10 +87,14 @@ describe('UserRepository Integration Tests', () => {
 
     it('should throw NotFoundException when user is not found', async () => {
       // Arrange
-      mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(new Error('User not found'));
-      
+      mockPrismaService.user.findUniqueOrThrow.mockRejectedValue(
+        new Error('User not found'),
+      );
+
       // Act & Assert
-      await expect(userRepository.find({ id: 'nonexistent' })).rejects.toThrow(NotFoundException);
+      await expect(userRepository.find({ id: 'nonexistent' })).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -107,10 +113,10 @@ describe('UserRepository Integration Tests', () => {
           },
         },
       };
-      
+
       // Act
       const result = await userRepository.create(userData);
-      
+
       // Assert
       expect(result).toEqual(mockUser);
       expect(mockPrismaService.user.create).toHaveBeenCalledWith({
@@ -126,25 +132,31 @@ describe('UserRepository Integration Tests', () => {
         message: 'Unique constraint failed',
       };
       mockPrismaService.user.create.mockRejectedValue(uniqueConstraintError);
-      
+
       // Act & Assert
-      await expect(userRepository.create({
-        address: '0x123456789abcdef',
-        userName: 'testuser',
-        email: 'test@example.com',
-      })).rejects.toThrow(HttpException);
+      await expect(
+        userRepository.create({
+          address: '0x123456789abcdef',
+          userName: 'testuser',
+          email: 'test@example.com',
+        }),
+      ).rejects.toThrow(HttpException);
     });
 
     it('should throw InternalServerErrorException for other errors', async () => {
       // Arrange
-      mockPrismaService.user.create.mockRejectedValue(new Error('Database error'));
-      
+      mockPrismaService.user.create.mockRejectedValue(
+        new Error('Database error'),
+      );
+
       // Act & Assert
-      await expect(userRepository.create({
-        address: '0x123456789abcdef',
-        userName: 'testuser',
-        email: 'test@example.com',
-      })).rejects.toThrow('Failed to create user');
+      await expect(
+        userRepository.create({
+          address: '0x123456789abcdef',
+          userName: 'testuser',
+          email: 'test@example.com',
+        }),
+      ).rejects.toThrow('Failed to create user');
     });
   });
-}); 
+});

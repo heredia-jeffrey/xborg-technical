@@ -10,7 +10,8 @@
     "test": {},
     "test:workspaces": {
       "dependsOn": [],
-      "outputs": []
+      "outputs": [],
+      "inputs": ["src/**/*.ts", "test/**/*.ts"]
     },
     "format": {},
     "dev": {

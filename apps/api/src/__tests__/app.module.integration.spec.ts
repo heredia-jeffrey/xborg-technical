@@ -23,9 +23,9 @@ describe('AppModule Integration Tests', () => {
     app = await Test.createTestingModule({
       imports: [AppModule],
     })
-    .overrideProvider(ConfigService)
-    .useValue(mockConfigService)
-    .compile();
+      .overrideProvider(ConfigService)
+      .useValue(mockConfigService)
+      .compile();
   });
 
   afterAll(async () => {
@@ -38,7 +38,7 @@ describe('AppModule Integration Tests', () => {
     it('should have ConfigService available', () => {
       // Act
       const configService = app.get<ConfigService>(ConfigService);
-      
+
       // Assert
       expect(configService).toBeDefined();
     });
@@ -46,7 +46,7 @@ describe('AppModule Integration Tests', () => {
     it('should have PrismaService available', () => {
       // Act
       const prismaService = app.get<PrismaService>(PrismaService);
-      
+
       // Assert
       expect(prismaService).toBeDefined();
     });
@@ -54,7 +54,7 @@ describe('AppModule Integration Tests', () => {
     it('should have UserService available', () => {
       // Act
       const userService = app.get<UserService>(UserService);
-      
+
       // Assert
       expect(userService).toBeDefined();
     });
@@ -62,7 +62,7 @@ describe('AppModule Integration Tests', () => {
     it('should have UserRepository available', () => {
       // Act
       const userRepository = app.get<UserRepository>(UserRepository);
-      
+
       // Assert
       expect(userRepository).toBeDefined();
     });
@@ -72,7 +72,7 @@ describe('AppModule Integration Tests', () => {
     it('should have UserService with proper dependencies', () => {
       // Act
       const userService = app.get<UserService>(UserService);
-      
+
       // Assert
       expect(userService).toHaveProperty('userRepository');
     });
@@ -80,7 +80,7 @@ describe('AppModule Integration Tests', () => {
     it('should have UserRepository with proper dependencies', () => {
       // Act
       const userRepository = app.get<UserRepository>(UserRepository);
-      
+
       // Assert
       expect(userRepository).toHaveProperty('prisma');
     });
@@ -88,9 +88,9 @@ describe('AppModule Integration Tests', () => {
     it('should have PrismaService with proper dependencies', () => {
       // Act
       const prismaService = app.get<PrismaService>(PrismaService);
-      
+
       // Assert
       expect(prismaService).toHaveProperty('config');
     });
   });
-}); 
+});

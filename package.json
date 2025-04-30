@@ -4,7 +4,7 @@
     "build": "turbo run build --filter=./apps/* --filter=./packages/*",
     "dev": "turbo run dev",
     "lint": "turbo run lint --filter=./apps/* --filter=./packages/*",
-    "test": "turbo run test:workspaces",
+    "test": "cd apps/api && yarn test",
     "format": "prettier --write \"**/*.{ts,tsx,md,yml}\"",
     "prepare": "husky install",
     "start:local:infra": "docker compose --file .local/docker-compose.yml up --detach"

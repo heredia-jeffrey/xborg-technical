@@ -21,9 +21,10 @@ export class UserService {
     this.logger.log(`Registering new user with address: ${address}`);
 
     // Check if user already exists by address or username
-    const userExists = await this.userRepository.exists({ address }) || 
-                      await this.userRepository.exists({ userName });
-    
+    const userExists =
+      (await this.userRepository.exists({ address })) ||
+      (await this.userRepository.exists({ userName }));
+
     if (userExists) {
       throw new ConflictException('User already exists');
     }

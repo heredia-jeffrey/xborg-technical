@@ -60,8 +60,8 @@ describe('User API Integration Tests', () => {
           useValue: {
             find: jest.fn(),
             create: jest.fn(),
-            exists: jest.fn()
-          }
+            exists: jest.fn(),
+          },
         },
         {
           provide: PrismaService,
@@ -96,7 +96,10 @@ describe('User API Integration Tests', () => {
 
       // Assert
       expect(result).toEqual(mockUser);
-      expect(userRepository.find).toHaveBeenCalledWith({ id: '1', address: undefined });
+      expect(userRepository.find).toHaveBeenCalledWith({
+        id: '1',
+        address: undefined,
+      });
     });
 
     it('should retrieve a user by address', async () => {
@@ -109,13 +112,18 @@ describe('User API Integration Tests', () => {
 
       // Assert
       expect(result).toEqual(mockUser);
-      expect(userRepository.find).toHaveBeenCalledWith({ id: undefined, address: '0x123456789abcdef' });
+      expect(userRepository.find).toHaveBeenCalledWith({
+        id: undefined,
+        address: '0x123456789abcdef',
+      });
     });
 
     it('should throw NotFoundException when user is not found', async () => {
       // Arrange
       const getUserDTO: GetUserDTO = { id: 'nonexistent' };
-      jest.spyOn(userRepository, 'find').mockRejectedValue(new Error('User not found'));
+      jest
+        .spyOn(userRepository, 'find')
+        .mockRejectedValue(new Error('User not found'));
 
       // Act & Assert
       await expect(userController.getUser(getUserDTO)).rejects.toThrow();
@@ -126,7 +134,7 @@ describe('User API Integration Tests', () => {
     it('should successfully create a new user', async () => {
       // Arrange
       jest.spyOn(userRepository, 'create').mockResolvedValue(mockUser);
-      
+
       // Act
       const result = await userController.signup(mockSignUpData);
 
@@ -138,7 +146,7 @@ describe('User API Integration Tests', () => {
       // Arrange
       jest.spyOn(userRepository, 'create').mockResolvedValue(mockUser);
       jest.spyOn(userRepository, 'exists').mockResolvedValue(false);
-      
+
       // Act
       const result = await userService.signup(mockSignUpData);
 
@@ -152,17 +160,17 @@ describe('User API Integration Tests', () => {
           create: {
             firstName: mockSignUpData.firstName,
             lastName: mockSignUpData.lastName,
-          }
-        }
+          },
+        },
       });
     });
 
     it('should throw an error when a duplicate user is created', async () => {
       // Arrange
       jest.spyOn(userRepository, 'exists').mockResolvedValue(true);
-      
+
       // Act & Assert
       await expect(userService.signup(mockSignUpData)).rejects.toThrow();
     });
   });
-}); 
+});
