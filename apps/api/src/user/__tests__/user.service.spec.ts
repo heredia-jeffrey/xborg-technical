@@ -40,6 +40,53 @@ describe('UserService', () => {
       expect(authResponse).toEqual(mockUser);
     });
 
+    it('should create a profile during user signup', async () => {
+      // Setup repository behavior
+      mockUserRepository.exists.resolves(false);
+      mockUserRepository.create.resolves(mockUser);
+
+      // Call the signup method
+      await userService.signup(mockSignupRequest);
+
+      // Verify create was called with the correct profile data
+      expect(mockUserRepository.create.calledOnce).toBeTruthy();
+      const createArgs = mockUserRepository.create.firstCall.args[0];
+      
+      // Check that profile creation is included in the create call
+      expect(createArgs).toHaveProperty('profile.create');
+      expect(createArgs.profile.create).toEqual({
+        firstName: mockSignupRequest.firstName,
+        lastName: mockSignupRequest.lastName,
+      });
+    });
+
+    it('should handle profile creation with missing optional fields', async () => {
+      // Setup repository behavior
+      mockUserRepository.exists.resolves(false);
+      mockUserRepository.create.resolves(mockUser);
+
+      // Create signup request without firstName and lastName
+      const signupRequestWithoutProfileData = {
+        address: 'test-address',
+        userName: 'testuser',
+        email: 'test@example.com',
+      };
+
+      // Call the signup method
+      await userService.signup(signupRequestWithoutProfileData);
+
+      // Verify create was called with the correct profile data
+      expect(mockUserRepository.create.calledOnce).toBeTruthy();
+      const createArgs = mockUserRepository.create.firstCall.args[0];
+      
+      // Check that profile creation still occurs but with undefined values
+      expect(createArgs).toHaveProperty('profile.create');
+      expect(createArgs.profile.create).toEqual({
+        firstName: undefined,
+        lastName: undefined,
+      });
+    });
+
     it('should detect existing user by address and throw ConflictException', async () => {
       // Setup exists to return true when checking for duplicate address
       mockUserRepository.exists.resolves(false); // Default behavior
