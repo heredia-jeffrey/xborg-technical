@@ -11,7 +11,7 @@ describe('PrismaService', () => {
   beforeEach(async () => {
     // Simple mock for ConfigService
     configService = {
-      get: jest.fn().mockReturnValue('mock-db-url')
+      get: jest.fn().mockReturnValue('mock-db-url'),
     } as any;
 
     // Create test module
@@ -26,7 +26,7 @@ describe('PrismaService', () => {
     }).compile();
 
     prismaService = moduleRef.get<PrismaService>(PrismaService);
-    
+
     // Mock connection methods after getting the service
     prismaService.$connect = jest.fn().mockResolvedValue(undefined);
     prismaService.$on = jest.fn();
@@ -44,49 +44,53 @@ describe('PrismaService', () => {
       await prismaService.onModuleInit();
       expect(prismaService.$connect).toHaveBeenCalled();
     });
-    
+
     it('should handle connection errors', async () => {
       // Setup error scenario
-      prismaService.$connect = jest.fn().mockRejectedValueOnce(new Error('Connection error'));
-      
+      prismaService.$connect = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('Connection error'));
+
       // Test that the error is propagated
-      await expect(prismaService.onModuleInit()).rejects.toThrow('Connection error');
+      await expect(prismaService.onModuleInit()).rejects.toThrow(
+        'Connection error',
+      );
     });
   });
 
   describe('transaction handling', () => {
     it('should handle simple transactions', async () => {
       const transactionFn = async () => 'test-result';
-      
+
       await expect(
-        prismaService.$transaction(transactionFn)
+        prismaService.$transaction(transactionFn),
       ).resolves.toBeDefined();
     });
-    
+
     it('should handle transaction errors', async () => {
       // Create a transaction function that throws an error
       const failingTransactionFn = async () => {
         throw new Error('Transaction failed');
       };
-      
+
       // Ensure the error propagates correctly
       await expect(
-        prismaService.$transaction(failingTransactionFn)
+        prismaService.$transaction(failingTransactionFn),
       ).rejects.toThrow('Transaction failed');
     });
   });
-  
+
   describe('shutdown hooks', () => {
     it('should setup shutdown hooks', async () => {
       const mockApp = {
         close: jest.fn().mockResolvedValue(undefined),
       } as unknown as INestMicroservice;
-      
+
       await prismaService.enableShutdownHooks(mockApp);
-      
+
       expect(prismaService.$on).toHaveBeenCalledWith(
         'beforeExit',
-        expect.any(Function)
+        expect.any(Function),
       );
     });
   });
