@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StubbedInstance, stubInterface } from 'ts-sinon';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, BadRequestException } from '@nestjs/common';
 
 import { UserRepository } from '../user.repository';
 import { UserService } from '../user.service';
@@ -11,6 +11,12 @@ describe('UserService', () => {
 
   const mockUserRepository: StubbedInstance<UserRepository> =
     stubInterface<UserRepository>();
+
+  // Create a valid signup request with proper email
+  const validSignupRequest = {
+    ...mockSignupRequest,
+    email: 'valid@example.com',
+  };
 
   beforeEach(async () => {
     // Reset all stubs before each test
@@ -35,7 +41,7 @@ describe('UserService', () => {
       mockUserRepository.exists.resolves(false);
       mockUserRepository.create.resolves(mockUser);
 
-      const authResponse = await userService.signup(mockSignupRequest);
+      const authResponse = await userService.signup(validSignupRequest);
 
       expect(authResponse).toEqual(mockUser);
     });
@@ -46,7 +52,7 @@ describe('UserService', () => {
       mockUserRepository.create.resolves(mockUser);
 
       // Call the signup method
-      await userService.signup(mockSignupRequest);
+      await userService.signup(validSignupRequest);
 
       // Verify create was called with the correct profile data
       expect(mockUserRepository.create.calledOnce).toBeTruthy();
@@ -55,8 +61,8 @@ describe('UserService', () => {
       // Check that profile creation is included in the create call
       expect(createArgs).toHaveProperty('profile.create');
       expect(createArgs.profile.create).toEqual({
-        firstName: mockSignupRequest.firstName,
-        lastName: mockSignupRequest.lastName,
+        firstName: validSignupRequest.firstName,
+        lastName: validSignupRequest.lastName,
       });
     });
 
@@ -87,22 +93,89 @@ describe('UserService', () => {
       });
     });
 
+    it('should validate email format if provided', async () => {
+      // Setup repository behavior
+      mockUserRepository.exists.resolves(false);
+      
+      // Create signup request with invalid email
+      const invalidEmailRequest = {
+        ...mockSignupRequest,
+        email: 'invalid-email',
+      };
+
+      // Call the signup method and expect it to throw
+      await expect(userService.signup(invalidEmailRequest)).rejects.toThrow(
+        BadRequestException,
+      );
+
+      // Verify repository was never called
+      expect(mockUserRepository.create.called).toBeFalsy();
+    });
+
+    it('should accept a valid email format', async () => {
+      // Setup repository behavior
+      mockUserRepository.exists.resolves(false);
+      mockUserRepository.create.resolves(mockUser);
+      
+      // Create signup request with valid email
+      const validEmailRequest = {
+        ...mockSignupRequest,
+        email: 'valid.email@example.com',
+      };
+
+      // Call the signup method
+      await userService.signup(validEmailRequest);
+
+      // Verify create was called with the correct email
+      expect(mockUserRepository.create.calledOnce).toBeTruthy();
+      const createArgs = mockUserRepository.create.firstCall.args[0];
+      expect(createArgs.email).toEqual('valid.email@example.com');
+    });
+
+    it('should handle malformed request with missing required fields', async () => {
+      // Setup repository behavior
+      mockUserRepository.exists.resolves(false);
+      
+      // Test without address (required field)
+      const requestWithoutAddress = {
+        userName: mockSignupRequest.userName,
+      };
+
+      // Call the signup method and expect it to throw
+      await expect(
+        userService.signup(requestWithoutAddress as any)
+      ).rejects.toThrow(BadRequestException);
+
+      // Test without userName (required field)
+      const requestWithoutUserName = {
+        address: mockSignupRequest.address,
+      };
+
+      // Call the signup method and expect it to throw
+      await expect(
+        userService.signup(requestWithoutUserName as any)
+      ).rejects.toThrow(BadRequestException);
+
+      // Verify create was never called
+      expect(mockUserRepository.create.called).toBeFalsy();
+    });
+
     it('should detect existing user by address and throw ConflictException', async () => {
       // Setup exists to return true when checking for duplicate address
       mockUserRepository.exists.resolves(false); // Default behavior
       mockUserRepository.exists
-        .withArgs({ address: mockSignupRequest.address })
+        .withArgs({ address: validSignupRequest.address })
         .resolves(true);
 
       // Expect the signup to throw a ConflictException
-      await expect(userService.signup(mockSignupRequest)).rejects.toThrow(
+      await expect(userService.signup(validSignupRequest)).rejects.toThrow(
         new ConflictException('User already exists'),
       );
 
       // Verify the repository's exists method was called with the address
       expect(
         mockUserRepository.exists.calledWith({
-          address: mockSignupRequest.address,
+          address: validSignupRequest.address,
         }),
       ).toBeTruthy();
 
@@ -117,23 +190,23 @@ describe('UserService', () => {
       // Setup exists to return false for address check but true for username check
       const existsStub = mockUserRepository.exists;
       existsStub
-        .withArgs({ address: mockSignupRequest.address })
+        .withArgs({ address: validSignupRequest.address })
         .resolves(false);
       existsStub
-        .withArgs({ userName: mockSignupRequest.userName })
+        .withArgs({ userName: validSignupRequest.userName })
         .resolves(true);
 
       // Expect the signup to throw a ConflictException with correct message
-      await expect(userService.signup(mockSignupRequest)).rejects.toThrow(
+      await expect(userService.signup(validSignupRequest)).rejects.toThrow(
         new ConflictException('User already exists'),
       );
 
       // Verify both checks were performed
       expect(
-        existsStub.calledWith({ address: mockSignupRequest.address }),
+        existsStub.calledWith({ address: validSignupRequest.address }),
       ).toBeTruthy();
       expect(
-        existsStub.calledWith({ userName: mockSignupRequest.userName }),
+        existsStub.calledWith({ userName: validSignupRequest.userName }),
       ).toBeTruthy();
 
       // Verify create was never called since user exists
