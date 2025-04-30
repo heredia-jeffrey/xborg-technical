@@ -1,9 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run build --filter=./apps/* --filter=./packages/*",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
+    "lint": "turbo run lint --filter=./apps/* --filter=./packages/*",
     "test": "turbo run test:workspaces",
     "format": "prettier --write \"**/*.{ts,tsx,md,yml}\"",
     "prepare": "husky install",
