@@ -1,4 +1,9 @@
-import { Injectable, Logger, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 
 import { SignUpDTO } from 'lib-server';
 

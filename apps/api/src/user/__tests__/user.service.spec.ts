@@ -57,7 +57,7 @@ describe('UserService', () => {
       // Verify create was called with the correct profile data
       expect(mockUserRepository.create.calledOnce).toBeTruthy();
       const createArgs = mockUserRepository.create.firstCall.args[0];
-      
+
       // Check that profile creation is included in the create call
       expect(createArgs).toHaveProperty('profile.create');
       expect(createArgs.profile.create).toEqual({
@@ -84,7 +84,7 @@ describe('UserService', () => {
       // Verify create was called with the correct profile data
       expect(mockUserRepository.create.calledOnce).toBeTruthy();
       const createArgs = mockUserRepository.create.firstCall.args[0];
-      
+
       // Check that profile creation still occurs but with undefined values
       expect(createArgs).toHaveProperty('profile.create');
       expect(createArgs.profile.create).toEqual({
@@ -96,7 +96,7 @@ describe('UserService', () => {
     it('should validate email format if provided', async () => {
       // Setup repository behavior
       mockUserRepository.exists.resolves(false);
-      
+
       // Create signup request with invalid email
       const invalidEmailRequest = {
         ...mockSignupRequest,
@@ -116,7 +116,7 @@ describe('UserService', () => {
       // Setup repository behavior
       mockUserRepository.exists.resolves(false);
       mockUserRepository.create.resolves(mockUser);
-      
+
       // Create signup request with valid email
       const validEmailRequest = {
         ...mockSignupRequest,
@@ -135,7 +135,7 @@ describe('UserService', () => {
     it('should handle malformed request with missing required fields', async () => {
       // Setup repository behavior
       mockUserRepository.exists.resolves(false);
-      
+
       // Test without address (required field)
       const requestWithoutAddress = {
         userName: mockSignupRequest.userName,
@@ -143,7 +143,7 @@ describe('UserService', () => {
 
       // Call the signup method and expect it to throw
       await expect(
-        userService.signup(requestWithoutAddress as any)
+        userService.signup(requestWithoutAddress as any),
       ).rejects.toThrow(BadRequestException);
 
       // Test without userName (required field)
@@ -153,7 +153,7 @@ describe('UserService', () => {
 
       // Call the signup method and expect it to throw
       await expect(
-        userService.signup(requestWithoutUserName as any)
+        userService.signup(requestWithoutUserName as any),
       ).rejects.toThrow(BadRequestException);
 
       // Verify create was never called
