@@ -26,6 +26,15 @@ export class UserRepository {
       });
   }
 
+  async exists(where: Prisma.UserWhereUniqueInput): Promise<boolean> {
+    try {
+      await this.prisma.user.findUniqueOrThrow({ where });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async create(data: Prisma.UserCreateInput): Promise<User> {
     return this.prisma.user
       .create({

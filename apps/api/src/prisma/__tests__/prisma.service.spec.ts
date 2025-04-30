@@ -7,8 +7,8 @@ import { PrismaService } from '../prisma.service';
 
 describe('PrismaService', () => {
   let prismaService: PrismaService;
-  
-  const mockConfigService: StubbedInstance<ConfigService> = 
+
+  const mockConfigService: StubbedInstance<ConfigService> =
     stubInterface<ConfigService>();
 
   beforeEach(async () => {
@@ -25,7 +25,7 @@ describe('PrismaService', () => {
     }).compile();
 
     prismaService = module.get<PrismaService>(PrismaService);
-    
+
     // Mock the connect method to prevent actual connection attempts
     prismaService.$connect = jest.fn();
     prismaService.$on = jest.fn();
@@ -34,19 +34,22 @@ describe('PrismaService', () => {
   describe('onModuleInit', () => {
     it('should connect to the database', async () => {
       await prismaService.onModuleInit();
-      
+
       expect(prismaService.$connect).toHaveBeenCalled();
     });
   });
 
   describe('enableShutdownHooks', () => {
     it('should set up beforeExit hook', async () => {
-      const mockApp: StubbedInstance<INestMicroservice> = 
+      const mockApp: StubbedInstance<INestMicroservice> =
         stubInterface<INestMicroservice>();
-      
+
       await prismaService.enableShutdownHooks(mockApp);
-      
-      expect(prismaService.$on).toHaveBeenCalledWith('beforeExit', expect.any(Function));
+
+      expect(prismaService.$on).toHaveBeenCalledWith(
+        'beforeExit',
+        expect.any(Function),
+      );
     });
   });
-}); 
+});

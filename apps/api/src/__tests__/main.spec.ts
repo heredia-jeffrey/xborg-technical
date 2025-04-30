@@ -44,7 +44,7 @@ jest.mock('../prisma/prisma.service', () => ({
 describe('Bootstrap', () => {
   let mockApp: StubbedInstance<INestMicroservice>;
   let mockPrismaService: StubbedInstance<PrismaService>;
-  
+
   beforeEach(() => {
     // Reset mocks before each test
     jest.clearAllMocks();
@@ -63,7 +63,7 @@ describe('Bootstrap', () => {
   it('should bootstrap the application correctly', async () => {
     // Spy on console.log
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-    
+
     // We need to isolate the module to prevent circular dependencies
     jest.isolateModules(() => {
       // Import the bootstrap function
@@ -75,21 +75,25 @@ describe('Bootstrap', () => {
 
     // Check that NestFactory.createMicroservice was called
     expect(NestFactory.createMicroservice).toHaveBeenCalled();
-    
+
     // Check that createMicroservice was called with correct parameters
-    const createMicroserviceCalls = (NestFactory.createMicroservice as jest.Mock).mock.calls;
+    const createMicroserviceCalls = (
+      NestFactory.createMicroservice as jest.Mock
+    ).mock.calls;
     expect(createMicroserviceCalls.length).toBe(1);
-    
+
     // Verify the options object structure without directly comparing the module
     const options = createMicroserviceCalls[0][1];
     expect(options.transport).toBe(Transport.RMQ);
     expect(options.options.queue).toBe('api_queue');
-    expect(options.options.urls).toContain('amqp://xborg:password@localhost:36010');
+    expect(options.options.urls).toContain(
+      'amqp://xborg:password@localhost:36010',
+    );
     expect(options.options.queueOptions.durable).toBe(true);
     expect(options.options.noAck).toBe(true);
 
     // Wait for all promises to resolve
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Assert enableShutdownHooks was called
     expect(mockPrismaService.enableShutdownHooks.called).toBeTruthy();
@@ -100,4 +104,4 @@ describe('Bootstrap', () => {
     // Restore console.log
     consoleSpy.mockRestore();
   });
-}); 
+});

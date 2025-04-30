@@ -15,11 +15,11 @@ describe('UserController', () => {
     mockUserService = {
       signup: jest.fn(),
     };
-    
+
     mockUserRepository = {
       find: jest.fn(),
     };
-    
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [
@@ -53,7 +53,9 @@ describe('UserController', () => {
       const user = await userController.getUser({ address: mockUser.address });
 
       expect(user).toEqual(mockUser);
-      expect(mockUserRepository.find).toHaveBeenCalledWith({ address: mockUser.address });
+      expect(mockUserRepository.find).toHaveBeenCalledWith({
+        address: mockUser.address,
+      });
     });
   });
 
@@ -67,4 +69,4 @@ describe('UserController', () => {
       expect(mockUserService.signup).toHaveBeenCalledWith(mockSignupRequest);
     });
   });
-}); 
+});

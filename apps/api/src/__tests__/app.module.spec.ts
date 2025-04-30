@@ -51,15 +51,17 @@ describe('AppModule', () => {
 
     // Now we're mocking the module's metadata directly
     const imports = Reflect.getMetadata('imports', AppModule);
-    
+
     // Check that PrismaModule and UserModule are imported
     expect(imports).toContain(PrismaModule);
     expect(imports).toContain(UserModule);
-    
+
     // Check that a ConfigModule is included (it will be a function for dynamic modules)
-    expect(imports.some(imp => 
-      typeof imp === 'function' || 
-      (imp && imp.module === ConfigModule)
-    )).toBeTruthy();
+    expect(
+      imports.some(
+        (imp) =>
+          typeof imp === 'function' || (imp && imp.module === ConfigModule),
+      ),
+    ).toBeTruthy();
   });
-}); 
+});

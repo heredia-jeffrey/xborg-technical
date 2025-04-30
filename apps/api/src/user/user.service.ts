@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ConflictException } from '@nestjs/common';
 
 import { SignUpDTO } from 'lib-server';
 
@@ -19,6 +19,14 @@ export class UserService {
     lastName,
   }: SignUpDTO): Promise<User> {
     this.logger.log(`Registering new user with address: ${address}`);
+
+    // Check if user already exists by address or username
+    const userExists = await this.userRepository.exists({ address }) || 
+                      await this.userRepository.exists({ userName });
+    
+    if (userExists) {
+      throw new ConflictException('User already exists');
+    }
 
     return this.userRepository.create({
       address,
