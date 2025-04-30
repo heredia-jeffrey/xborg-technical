@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { StubbedInstance, stubInterface } from 'ts-sinon';
 
 import { UserRepository } from '../user.repository';
@@ -53,12 +57,12 @@ describe('UserRepository', () => {
       mockPrismaService.user.findUniqueOrThrow = jest
         .fn()
         .mockResolvedValue(mockUser);
-      
+
       const exists = await userRepository.exists({ id: mockUser.id });
-      
+
       expect(exists).toBe(true);
-      expect(mockPrismaService.user.findUniqueOrThrow).toHaveBeenCalledWith({ 
-        where: { id: mockUser.id } 
+      expect(mockPrismaService.user.findUniqueOrThrow).toHaveBeenCalledWith({
+        where: { id: mockUser.id },
       });
     });
 
@@ -66,12 +70,12 @@ describe('UserRepository', () => {
       mockPrismaService.user.findUniqueOrThrow = jest
         .fn()
         .mockRejectedValue(new Error('User not found'));
-      
+
       const exists = await userRepository.exists({ id: 'non-existent-id' });
-      
+
       expect(exists).toBe(false);
-      expect(mockPrismaService.user.findUniqueOrThrow).toHaveBeenCalledWith({ 
-        where: { id: 'non-existent-id' } 
+      expect(mockPrismaService.user.findUniqueOrThrow).toHaveBeenCalledWith({
+        where: { id: 'non-existent-id' },
       });
     });
   });
@@ -113,7 +117,7 @@ describe('UserRepository', () => {
         .mockRejectedValue(databaseError);
 
       await expect(userRepository.find({ id: mockUser.id })).rejects.toThrow(
-        new NotFoundException()
+        new NotFoundException(),
       );
     });
 
@@ -124,7 +128,7 @@ describe('UserRepository', () => {
         .mockRejectedValue(databaseError);
 
       await expect(userRepository.create(mockCreateUser)).rejects.toThrow(
-        new InternalServerErrorException('Failed to create user')
+        new InternalServerErrorException('Failed to create user'),
       );
     });
   });
