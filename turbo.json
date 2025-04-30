@@ -8,6 +8,10 @@
     },
     "lint": {},
     "test": {},
+    "test:workspaces": {
+      "dependsOn": [],
+      "outputs": []
+    },
     "format": {},
     "dev": {
       "cache": false,
