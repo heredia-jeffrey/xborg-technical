@@ -1,0 +1,29 @@
+version: '3.8'
+
+name: 'xborg-challenge'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: xborg-challenge-postgres
+    ports:
+      - '36000:5432'
+    environment:
+      - POSTGRES_USER=xborg
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=password
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - ./data/postgres:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: xborg-challenge-rabbitmq
+    ports:
+      - '36010:5672'
+      - '36011:15672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=xborg
+      - RABBITMQ_DEFAULT_PASS=password
+    volumes:
+      - ./data/rabbitmq/:/var/lib/rabbitmq/
