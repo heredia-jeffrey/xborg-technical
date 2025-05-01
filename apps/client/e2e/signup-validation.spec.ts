@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Signup Form Validation', () => {
   test.beforeEach(async ({ page }) => {
     // Mock the signup page with a form
-    await page.route('/signup', async route => {
+    await page.route('/signup', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'text/html',
@@ -66,10 +66,10 @@ test.describe('Signup Form Validation', () => {
               </div>
             </body>
           </html>
-        `
+        `,
       });
     });
-    
+
     await page.goto('/signup');
   });
 
@@ -79,41 +79,47 @@ test.describe('Signup Form Validation', () => {
     await expect(page.getByLabel('Email address')).toBeVisible();
     await expect(page.getByLabel('First name')).toBeVisible();
     await expect(page.getByLabel('Last name')).toBeVisible();
-    await expect(page.getByRole('button', { name: /sign up with metamask/i })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /sign up with metamask/i })
+    ).toBeVisible();
   });
 
   test('should show validation error for empty username', async ({ page }) => {
     // Click the sign up button without filling username
     await page.getByRole('button', { name: /sign up with metamask/i }).click();
-    
+
     // Expect error message for required username
     await expect(page.getByText('Username is required')).toBeVisible();
   });
 
-  test('should show validation error for invalid email format', async ({ page }) => {
+  test('should show validation error for invalid email format', async ({
+    page,
+  }) => {
     // Fill in username field (required)
     await page.getByLabel('Username').fill('testuser');
-    
+
     // Fill in invalid email
     await page.getByLabel('Email address').fill('invalid-email');
-    
+
     // Click sign up button
     await page.getByRole('button', { name: /sign up with metamask/i }).click();
-    
+
     // Expect error message for invalid email
     await expect(page.getByText('Must be a valid email')).toBeVisible();
   });
 
-  test('should not show validation error for valid email format', async ({ page }) => {
+  test('should not show validation error for valid email format', async ({
+    page,
+  }) => {
     // Fill in username field (required)
     await page.getByLabel('Username').fill('testuser');
-    
+
     // Fill in valid email
     await page.getByLabel('Email address').fill('valid@example.com');
-    
+
     // Click sign up button
     await page.getByRole('button', { name: /sign up with metamask/i }).click();
-    
+
     // Expect no error message for email
     await expect(page.getByText('Must be a valid email')).not.toBeVisible();
   });
@@ -121,13 +127,13 @@ test.describe('Signup Form Validation', () => {
   test('should accept special characters in username', async ({ page }) => {
     // Fill in username with special characters
     await page.getByLabel('Username').fill('user-name_123.test');
-    
+
     // Fill in valid email
     await page.getByLabel('Email address').fill('valid@example.com');
-    
+
     // Click sign up button
     await page.getByRole('button', { name: /sign up with metamask/i }).click();
-    
+
     // Expect no error for username format
     await expect(page.getByText('Username is required')).not.toBeVisible();
   });
@@ -135,14 +141,16 @@ test.describe('Signup Form Validation', () => {
   test('should accept special characters in email', async ({ page }) => {
     // Fill in username field
     await page.getByLabel('Username').fill('testuser');
-    
+
     // Fill in email with special characters
-    await page.getByLabel('Email address').fill('user.name+tag@example-site.com');
-    
+    await page
+      .getByLabel('Email address')
+      .fill('user.name+tag@example-site.com');
+
     // Click sign up button
     await page.getByRole('button', { name: /sign up with metamask/i }).click();
-    
+
     // Expect no error for email format
     await expect(page.getByText('Must be a valid email')).not.toBeVisible();
   });
-}); 
+});

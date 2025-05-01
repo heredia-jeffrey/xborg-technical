@@ -4,7 +4,7 @@ test.describe('Accessibility', () => {
   // Mock the login page content
   test.beforeEach(async ({ page }) => {
     // Setup mock for login page
-    await page.route('/login', async route => {
+    await page.route('/login', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'text/html',
@@ -22,12 +22,12 @@ test.describe('Accessibility', () => {
               </div>
             </body>
           </html>
-        `
+        `,
       });
     });
 
     // Setup mock for signup page
-    await page.route('/signup', async route => {
+    await page.route('/signup', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'text/html',
@@ -44,12 +44,12 @@ test.describe('Accessibility', () => {
               </div>
             </body>
           </html>
-        `
+        `,
       });
     });
 
     // Setup mock for home page
-    await page.route('/', async route => {
+    await page.route('/', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'text/html',
@@ -66,7 +66,7 @@ test.describe('Accessibility', () => {
               </div>
             </body>
           </html>
-        `
+        `,
       });
     });
   });
@@ -82,22 +82,26 @@ test.describe('Accessibility', () => {
     const headings = await page.getByRole('heading').all();
     expect(headings.length).toBeGreaterThan(0);
   });
-  
+
   test('should have navigation links', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('link', { name: /login/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /sign up/i })).toBeVisible();
   });
-  
+
   test('login page should be accessible', async ({ page }) => {
     await page.goto('/login');
     await expect(page.getByText(/Login to/i)).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Login with Metamask' })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Login with Metamask' })
+    ).toBeVisible();
   });
-  
+
   test('signup page should be accessible', async ({ page }) => {
     await page.goto('/signup');
     await expect(page.getByText(/Sign up to/i)).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Sign up with Metamask' })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Sign up with Metamask' })
+    ).toBeVisible();
   });
-}); 
+});

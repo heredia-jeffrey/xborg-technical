@@ -16,6 +16,7 @@ The tests cover:
 You can run the tests using the following commands from the client directory:
 
 ### Simple tests (Recommended)
+
 These tests don't require a running server and are useful for quick verification:
 
 ```bash
@@ -27,14 +28,17 @@ npx playwright test e2e/basic.spec.ts --config=playwright.simple.config.ts
 ```
 
 ### Server-dependent tests (Manual approach)
+
 For tests that require the Next.js development server, use the following two-step process:
 
 **Step 1:** Start the development server in one terminal:
+
 ```bash
 npm run dev
 ```
 
 **Step 2:** In a separate terminal, run the tests:
+
 ```bash
 npx playwright test
 ```
@@ -56,6 +60,7 @@ Tests are organized by functionality:
 We have two configuration files:
 
 1. `playwright.config.ts` - Main configuration for tests that require a web server
+
    - The automatic server start is commented out to avoid issues
    - Includes settings for browser, test directory, timeouts, etc.
 
@@ -73,4 +78,4 @@ If you encounter issues with the tests:
 
 ## Notes on Metamask Interaction
 
-Since the app uses Metamask for authentication, full end-to-end testing of authentication flows would require special handling for wallet interactions. These current tests focus on UI validation rather than complete authentication flows. 
+Since the app uses Metamask for authentication, full end-to-end testing of authentication flows would require special handling for wallet interactions. These current tests focus on UI validation rather than complete authentication flows.

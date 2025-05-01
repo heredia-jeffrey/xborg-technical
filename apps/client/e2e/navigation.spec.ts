@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Navigation', () => {
   test.beforeEach(async ({ page }) => {
     // Setup mock for login page
-    await page.route('/login', async route => {
+    await page.route('/login', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'text/html',
@@ -21,12 +21,12 @@ test.describe('Navigation', () => {
               </div>
             </body>
           </html>
-        `
+        `,
       });
     });
 
     // Setup mock for signup page
-    await page.route('/signup', async route => {
+    await page.route('/signup', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'text/html',
@@ -44,12 +44,12 @@ test.describe('Navigation', () => {
               </div>
             </body>
           </html>
-        `
+        `,
       });
     });
 
     // Setup mock for home page
-    await page.route('/', async route => {
+    await page.route('/', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'text/html',
@@ -66,7 +66,7 @@ test.describe('Navigation', () => {
               </div>
             </body>
           </html>
-        `
+        `,
       });
     });
   });
@@ -101,4 +101,4 @@ test.describe('Navigation', () => {
     await page.getByRole('link', { name: /sign up/i }).click();
     await expect(page).toHaveURL('/signup');
   });
-}); 
+});

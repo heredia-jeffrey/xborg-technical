@@ -14,12 +14,14 @@ test.describe('Basic Tests', () => {
         </body>
       </html>
     `);
-    
+
     // Verify the content is rendered correctly
-    await expect(page.getByRole('heading', { name: 'Hello Playwright' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Hello Playwright' })
+    ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Click me' })).toBeVisible();
   });
-  
+
   test('basic interaction - no server required', async ({ page }) => {
     // Create a simple HTML content with interactive elements
     await page.setContent(`
@@ -36,12 +38,12 @@ test.describe('Basic Tests', () => {
         </body>
       </html>
     `);
-    
+
     // Interact with the page
     await page.getByPlaceholder('Enter your name').fill('Playwright');
     await page.getByRole('button', { name: 'Greet' }).click();
-    
+
     // Verify the result
     await expect(page.locator('#result')).toHaveText('Hello, Playwright');
   });
-}); 
+});
