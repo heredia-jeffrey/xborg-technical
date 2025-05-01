@@ -17,4 +17,7 @@ echo Tests completed, shutting down servers...
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :3000') do taskkill /f /pid %%a
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :3333') do taskkill /f /pid %%a
 
-echo Done! 
+echo Done!
+
+npx playwright test e2e/profile-form-validation.spec.ts --reporter=list
+npx playwright test e2e/state-persistence.spec.ts --reporter=list 

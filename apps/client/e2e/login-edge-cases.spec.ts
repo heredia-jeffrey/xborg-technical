@@ -72,7 +72,9 @@ test.describe('Login Form Edge Cases', () => {
 
   test('should display the metamask login button', async ({ page }) => {
     // Basic test to verify the page loads
-    await expect(page.getByRole('button', { name: 'Login with Metamask' })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Login with Metamask' })
+    ).toBeVisible();
     await expect(page.getByText('Login to')).toBeVisible();
     await expect(page.getByText('Xborg')).toBeVisible();
   });
@@ -82,7 +84,7 @@ test.describe('Login Form Edge Cases', () => {
     await page.evaluate(() => {
       document.getElementById('metamask-not-installed').style.display = 'block';
     });
-    
+
     // Verify the error message appears
     await expect(page.locator('#metamask-not-installed')).toBeVisible();
     await expect(page.locator('#metamask-not-installed')).toHaveText(
@@ -95,7 +97,7 @@ test.describe('Login Form Edge Cases', () => {
     await page.evaluate(() => {
       document.getElementById('network-error').style.display = 'block';
     });
-    
+
     // Verify the error message appears
     await expect(page.locator('#network-error')).toBeVisible();
     await expect(page.locator('#network-error')).toHaveText(
@@ -107,20 +109,20 @@ test.describe('Login Form Edge Cases', () => {
     // Mock form submission
     await page.evaluate(() => {
       document.getElementById('success-message').style.display = 'block';
-      
+
       // Use a simpler approach to test redirection
       setTimeout(() => {
         window.location.href = '/profile';
       }, 100);
     });
-    
+
     // Click the login button
     await page.getByRole('button', { name: 'Login with Metamask' }).click();
-    
+
     // Check for title change after redirection
     await expect(async () => {
       const title = await page.title();
       expect(title).toContain('XBorg - Profile');
     }).toPass({ timeout: 5000 });
   });
-}); 
+});

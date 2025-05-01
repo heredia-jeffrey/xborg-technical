@@ -112,23 +112,37 @@ test.describe('API Error Handling', () => {
 
   test('should display the API testing interface', async ({ page }) => {
     // Verify the page loads and shows all buttons
-    await expect(page.getByRole('heading', { name: 'API Testing Page' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Get User Data' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Get 404 Error' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Get 403 Error' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Get 500 Error' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Get Timeout Error' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'API Testing Page' })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Get User Data' })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Get 404 Error' })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Get 403 Error' })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Get 500 Error' })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Get Timeout Error' })
+    ).toBeVisible();
   });
 
   test('should handle successful API response', async ({ page }) => {
     // Click the Get User Data button
     await page.getByRole('button', { name: 'Get User Data' }).click();
-    
+
     // Verify success message appears
     await expect(page.locator('#success-message')).toBeVisible();
-    
+
     // Verify response is displayed correctly
-    const responseText = await page.locator('#response-container').textContent();
+    const responseText = await page
+      .locator('#response-container')
+      .textContent();
     expect(responseText).toContain('Test User');
     expect(responseText).toContain('test@example.com');
   });
@@ -136,60 +150,68 @@ test.describe('API Error Handling', () => {
   test('should handle 404 API error', async ({ page }) => {
     // Click the Get 404 Error button
     await page.getByRole('button', { name: 'Get 404 Error' }).click();
-    
+
     // Verify error message appears
     await expect(page.locator('#error-404')).toBeVisible();
     await expect(page.locator('#error-404')).toHaveText(
       '404 Not Found: The requested resource was not found.'
     );
-    
+
     // Verify response is displayed correctly
-    const responseText = await page.locator('#response-container').textContent();
+    const responseText = await page
+      .locator('#response-container')
+      .textContent();
     expect(responseText).toBe('404 Not Found Error');
   });
 
   test('should handle 403 API error', async ({ page }) => {
     // Click the Get 403 Error button
     await page.getByRole('button', { name: 'Get 403 Error' }).click();
-    
+
     // Verify error message appears
     await expect(page.locator('#error-403')).toBeVisible();
     await expect(page.locator('#error-403')).toHaveText(
-      '403 Forbidden: You don\'t have permission to access this resource.'
+      "403 Forbidden: You don't have permission to access this resource."
     );
-    
+
     // Verify response is displayed correctly
-    const responseText = await page.locator('#response-container').textContent();
+    const responseText = await page
+      .locator('#response-container')
+      .textContent();
     expect(responseText).toBe('403 Forbidden Error');
   });
 
   test('should handle 500 API error', async ({ page }) => {
     // Click the Get 500 Error button
     await page.getByRole('button', { name: 'Get 500 Error' }).click();
-    
+
     // Verify error message appears
     await expect(page.locator('#error-500')).toBeVisible();
     await expect(page.locator('#error-500')).toHaveText(
       '500 Server Error: Something went wrong on our end. Please try again later.'
     );
-    
+
     // Verify response is displayed correctly
-    const responseText = await page.locator('#response-container').textContent();
+    const responseText = await page
+      .locator('#response-container')
+      .textContent();
     expect(responseText).toBe('500 Internal Server Error');
   });
 
   test('should handle timeout API error', async ({ page }) => {
     // Click the Get Timeout Error button
     await page.getByRole('button', { name: 'Get Timeout Error' }).click();
-    
+
     // Verify error message appears
     await expect(page.locator('#error-timeout')).toBeVisible();
     await expect(page.locator('#error-timeout')).toHaveText(
       'Request Timeout: The server took too long to respond.'
     );
-    
+
     // Verify response is displayed correctly
-    const responseText = await page.locator('#response-container').textContent();
+    const responseText = await page
+      .locator('#response-container')
+      .textContent();
     expect(responseText).toBe('Request Timeout Error');
   });
-}); 
+});

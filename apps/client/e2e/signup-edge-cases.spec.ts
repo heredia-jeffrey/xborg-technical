@@ -94,7 +94,9 @@ test.describe('Signup Form Edge Cases', () => {
 
   test('should display the metamask signup button', async ({ page }) => {
     // Basic test to verify the page loads
-    await expect(page.getByRole('button', { name: 'Sign up with Metamask' })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Sign up with Metamask' })
+    ).toBeVisible();
     await expect(page.getByText('Sign up to')).toBeVisible();
     await expect(page.getByText('Xborg')).toBeVisible();
   });
@@ -104,7 +106,7 @@ test.describe('Signup Form Edge Cases', () => {
     await page.evaluate(() => {
       document.getElementById('metamask-not-installed').style.display = 'block';
     });
-    
+
     // Verify the error message appears
     await expect(page.locator('#metamask-not-installed')).toBeVisible();
     await expect(page.locator('#metamask-not-installed')).toHaveText(
@@ -117,7 +119,7 @@ test.describe('Signup Form Edge Cases', () => {
     await page.evaluate(() => {
       document.getElementById('wallet-in-use').style.display = 'block';
     });
-    
+
     // Verify the error message appears
     await expect(page.locator('#wallet-in-use')).toBeVisible();
     await expect(page.locator('#wallet-in-use')).toHaveText(
@@ -130,7 +132,7 @@ test.describe('Signup Form Edge Cases', () => {
     await page.evaluate(() => {
       document.getElementById('rate-limit').style.display = 'block';
     });
-    
+
     // Verify the error message appears
     await expect(page.locator('#rate-limit')).toBeVisible();
     await expect(page.locator('#rate-limit')).toHaveText(
@@ -142,16 +144,16 @@ test.describe('Signup Form Edge Cases', () => {
     // Mock form submission
     await page.evaluate(() => {
       document.getElementById('success-message').style.display = 'block';
-      
+
       // Use a simpler approach to test redirection
       setTimeout(() => {
         window.location.href = '/dashboard';
       }, 100);
     });
-    
+
     // Click the signup button
     await page.getByRole('button', { name: 'Sign up with Metamask' }).click();
-    
+
     // Check for title change after redirection
     await expect(async () => {
       const title = await page.title();
@@ -162,9 +164,9 @@ test.describe('Signup Form Edge Cases', () => {
   test('should navigate to login page', async ({ page }) => {
     // Click the login link
     await page.getByRole('link', { name: 'Log in' }).click();
-    
+
     // Verify we're on the login page
     await expect(page).toHaveURL(/login/);
     await expect(page).toHaveTitle(/XBorg - Login/);
   });
-}); 
+});
