@@ -293,23 +293,27 @@ test.describe('MetaMask Integration Tests', () => {
     const isMetaMaskInstalled = await page.evaluate(() => {
       return window.ethereum && window.ethereum.isMetaMask;
     });
-    
+
     expect(isMetaMaskInstalled).toBe(true);
   });
 
   test('should connect to wallet successfully', async ({ page }) => {
     // Click connect button
     await page.click('#connect-wallet');
-    
+
     // Check if connection status shows success
     await expect(page.locator('#connection-status')).toHaveText('Connected!');
     await expect(page.locator('#connection-status')).toHaveClass(/success/);
-    
+
     // Check if account info is displayed
     await expect(page.locator('#account-info')).toBeVisible();
-    await expect(page.locator('#account-display')).toHaveText('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
-    await expect(page.locator('#network-display')).toHaveText('Ethereum Mainnet');
-    
+    await expect(page.locator('#account-display')).toHaveText(
+      '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+    );
+    await expect(page.locator('#network-display')).toHaveText(
+      'Ethereum Mainnet'
+    );
+
     // Check if other buttons are enabled
     await expect(page.locator('#sign-message')).toBeEnabled();
     await expect(page.locator('#send-transaction')).toBeEnabled();
@@ -320,14 +324,16 @@ test.describe('MetaMask Integration Tests', () => {
     await page.evaluate(() => {
       window.ethereum._shouldFailConnection = true;
     });
-    
+
     // Click connect button
     await page.click('#connect-wallet');
-    
+
     // Check if connection status shows error
-    await expect(page.locator('#connection-status')).toHaveText('Connection failed: User rejected connection');
+    await expect(page.locator('#connection-status')).toHaveText(
+      'Connection failed: User rejected connection'
+    );
     await expect(page.locator('#connection-status')).toHaveClass(/error/);
-    
+
     // Check if account info remains hidden
     await expect(page.locator('#account-info')).not.toBeVisible();
   });
@@ -336,36 +342,42 @@ test.describe('MetaMask Integration Tests', () => {
     // First connect to wallet
     await page.click('#connect-wallet');
     await expect(page.locator('#connection-status')).toHaveText('Connected!');
-    
+
     // Now sign a message
     await page.click('#sign-message');
-    
+
     // Check if signature status shows success
-    await expect(page.locator('#signature-status')).toHaveText('Signed successfully!');
+    await expect(page.locator('#signature-status')).toHaveText(
+      'Signed successfully!'
+    );
     await expect(page.locator('#signature-status')).toHaveClass(/success/);
-    
+
     // Check if signature data is displayed and contains expected content
     const signatureData = await page.locator('#signature-data').textContent();
     expect(signatureData).toContain('message');
     expect(signatureData).toContain('signature');
-    expect(signatureData).toContain('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
+    expect(signatureData).toContain(
+      '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+    );
   });
 
   test('should handle rejected message signing', async ({ page }) => {
     // First connect to wallet
     await page.click('#connect-wallet');
     await expect(page.locator('#connection-status')).toHaveText('Connected!');
-    
+
     // Configure mock to fail signing
     await page.evaluate(() => {
       window.ethereum._shouldFailSigning = true;
     });
-    
+
     // Try to sign a message
     await page.click('#sign-message');
-    
+
     // Check if signature status shows error
-    await expect(page.locator('#signature-status')).toHaveText('Signing failed: User rejected signing');
+    await expect(page.locator('#signature-status')).toHaveText(
+      'Signing failed: User rejected signing'
+    );
     await expect(page.locator('#signature-status')).toHaveClass(/error/);
   });
 
@@ -373,35 +385,41 @@ test.describe('MetaMask Integration Tests', () => {
     // First connect to wallet
     await page.click('#connect-wallet');
     await expect(page.locator('#connection-status')).toHaveText('Connected!');
-    
+
     // Now send a transaction
     await page.click('#send-transaction');
-    
+
     // Check if transaction status shows success
-    await expect(page.locator('#transaction-status')).toHaveText('Transaction sent!');
+    await expect(page.locator('#transaction-status')).toHaveText(
+      'Transaction sent!'
+    );
     await expect(page.locator('#transaction-status')).toHaveClass(/success/);
-    
+
     // Check if transaction data is displayed and contains expected content
     const txData = await page.locator('#transaction-data').textContent();
     expect(txData).toContain('transactionHash');
-    expect(txData).toContain('0x5a99cc8076253c775629aa02d519d4953f18cf6cb3e6f1f85a5c412b2cea7f66');
+    expect(txData).toContain(
+      '0x5a99cc8076253c775629aa02d519d4953f18cf6cb3e6f1f85a5c412b2cea7f66'
+    );
   });
 
   test('should handle rejected transaction', async ({ page }) => {
     // First connect to wallet
     await page.click('#connect-wallet');
     await expect(page.locator('#connection-status')).toHaveText('Connected!');
-    
+
     // Configure mock to fail transaction
     await page.evaluate(() => {
       window.ethereum._shouldFailTransaction = true;
     });
-    
+
     // Try to send a transaction
     await page.click('#send-transaction');
-    
+
     // Check if transaction status shows error
-    await expect(page.locator('#transaction-status')).toHaveText('Transaction failed: User rejected transaction');
+    await expect(page.locator('#transaction-status')).toHaveText(
+      'Transaction failed: User rejected transaction'
+    );
     await expect(page.locator('#transaction-status')).toHaveClass(/error/);
   });
-}); 
+});

@@ -169,27 +169,29 @@ test.describe('State Persistence Tests', () => {
     await page.setContent(HTML_CONTENT);
   });
 
-  test('should persist counter value across page navigation', async ({ page }) => {
+  test('should persist counter value across page navigation', async ({
+    page,
+  }) => {
     // Initial counter value
     await expect(page.locator('#counter-value')).toHaveText('0');
-    
+
     // Increment the counter a few times
     await page.click('#increment-btn');
     await page.click('#increment-btn');
     await page.click('#increment-btn');
-    
+
     // Check counter value
     await expect(page.locator('#counter-value')).toHaveText('3');
-    
+
     // Navigate to Notes page
     await page.click('#nav-notes');
-    
+
     // Check Notes page is active
     await expect(page.locator('#notes-page')).toBeVisible();
-    
+
     // Navigate back to Counter page
     await page.click('#nav-counter');
-    
+
     // Check Counter page is active and counter value persisted
     await expect(page.locator('#counter-page')).toBeVisible();
     await expect(page.locator('#counter-value')).toHaveText('3');
@@ -199,13 +201,13 @@ test.describe('State Persistence Tests', () => {
     // Increment the counter
     await page.click('#increment-btn');
     await page.click('#increment-btn');
-    
+
     // Check counter value
     await expect(page.locator('#counter-value')).toHaveText('2');
-    
+
     // Simulate page reload
     await page.click('#reload-link');
-    
+
     // Verify counter value is still there
     await expect(page.locator('#counter-value')).toHaveText('2');
   });
@@ -213,15 +215,15 @@ test.describe('State Persistence Tests', () => {
   test('should save theme preference', async ({ page }) => {
     // Navigate to Settings page
     await page.click('#nav-settings');
-    
+
     // Select dark theme
     await page.click('#theme-dark');
     await page.click('#save-settings-btn');
-    
+
     // Navigate away and back
     await page.click('#nav-counter');
     await page.click('#nav-settings');
-    
+
     // Verify dark theme is still selected
     await expect(page.locator('#theme-dark')).toHaveClass(/selected/);
     await expect(page.locator('#theme-light')).not.toHaveClass(/selected/);
@@ -232,21 +234,21 @@ test.describe('State Persistence Tests', () => {
     await page.click('#increment-btn');
     await page.click('#increment-btn');
     await page.click('#increment-btn');
-    
+
     // Verify counter is incremented
     await expect(page.locator('#counter-value')).toHaveText('3');
-    
+
     // Reset counter
     await page.click('#reset-btn');
-    
+
     // Verify counter is reset
     await expect(page.locator('#counter-value')).toHaveText('0');
-    
+
     // Navigate away and back
     await page.click('#nav-notes');
     await page.click('#nav-counter');
-    
+
     // Verify counter stays at 0
     await expect(page.locator('#counter-value')).toHaveText('0');
   });
-}); 
+});

@@ -22,7 +22,8 @@
     "husky": "8.0.3",
     "prettier": "2.5.1",
     "turbo": "latest",
-    "wait-on": "^7.0.1"
+    "wait-on": "^7.0.1",
+    "web-vitals": "^3.3.1"
   },
   "name": "xborg-tech-challenge",
   "packageManager": "yarn@1.22.19",

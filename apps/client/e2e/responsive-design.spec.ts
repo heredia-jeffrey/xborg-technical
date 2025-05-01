@@ -197,17 +197,17 @@ test.describe('Responsive Design Tests', () => {
     // Set a desktop viewport
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.setContent(HTML_CONTENT);
-    
+
     // Check that desktop navigation is visible
     await expect(page.locator('.desktop-nav')).toBeVisible();
-    
+
     // Check that mobile navigation toggle is hidden
     await expect(page.locator('.mobile-nav-toggle')).not.toBeVisible();
-    
+
     // Check that the cards are in a 3-column layout (width should be roughly 1/3 of the container)
     const firstCard = page.locator('.card').first();
     const boundingBox = await firstCard.boundingBox();
-    
+
     // Card should take up roughly 1/3 of the container width (accounting for gaps and padding)
     // We're checking if it's less than 400px which is roughly 1/3 of the 1200px max container
     expect(boundingBox.width).toBeLessThan(400);
@@ -218,26 +218,28 @@ test.describe('Responsive Design Tests', () => {
     // Set a tablet viewport
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.setContent(HTML_CONTENT);
-    
+
     // Check that desktop navigation is not visible
     await expect(page.locator('.desktop-nav')).not.toBeVisible();
-    
+
     // Check that mobile navigation toggle is visible
     await expect(page.locator('.mobile-nav-toggle')).toBeVisible();
-    
+
     // Check that mobile nav is initially closed
     await expect(page.locator('.mobile-nav.open')).not.toBeVisible();
-    
+
     // Check the card layout - should be in a single column now
     const cards = page.locator('.card');
     await expect(cards).toHaveCount(3);
-    
+
     // First and second cards should be stacked (similar Y positions)
     const firstCardBox = await cards.nth(0).boundingBox();
     const secondCardBox = await cards.nth(1).boundingBox();
-    
+
     // The second card's top should be below the first card's bottom
-    expect(secondCardBox.y).toBeGreaterThan(firstCardBox.y + firstCardBox.height);
+    expect(secondCardBox.y).toBeGreaterThan(
+      firstCardBox.y + firstCardBox.height
+    );
   });
 
   // Test on mobile viewport
@@ -245,63 +247,65 @@ test.describe('Responsive Design Tests', () => {
     // Set a mobile viewport using a predefined device
     await page.setViewportSize(devices['iPhone X'].viewport);
     await page.setContent(HTML_CONTENT);
-    
+
     // Check that desktop navigation is hidden
     await expect(page.locator('.desktop-nav')).not.toBeVisible();
-    
+
     // Check that mobile navigation toggle is visible
     await expect(page.locator('.mobile-nav-toggle')).toBeVisible();
-    
+
     // Test mobile navigation interaction
     await page.click('#mobile-nav-toggle');
-    
+
     // Mobile nav should be open now
     await expect(page.locator('#mobile-nav.open')).toBeVisible();
-    
+
     // Check all mobile nav items are visible
     await expect(page.locator('#mobile-nav-home')).toBeVisible();
     await expect(page.locator('#mobile-nav-profile')).toBeVisible();
     await expect(page.locator('#mobile-nav-settings')).toBeVisible();
     await expect(page.locator('#mobile-nav-logout')).toBeVisible();
-    
+
     // Close mobile nav
     await page.click('#mobile-close');
-    
+
     // Mobile nav should be closed
     await expect(page.locator('#mobile-nav.open')).not.toBeVisible();
-    
+
     // Card layout should be single column on mobile
     const cardGridStyles = await page.evaluate(() => {
       const cardGrid = document.querySelector('.card-grid');
       return window.getComputedStyle(cardGrid).gridTemplateColumns;
     });
-    
+
     // Should only have one column
     expect(cardGridStyles.split(' ').length).toBe(1);
   });
 
   // Test viewport size display
-  test('should update viewport size display when resizing', async ({ page }) => {
+  test('should update viewport size display when resizing', async ({
+    page,
+  }) => {
     // Start with desktop size
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.setContent(HTML_CONTENT);
-    
+
     // Check initial size display
     await expect(page.locator('#width')).toHaveText('1280');
     await expect(page.locator('#height')).toHaveText('720');
-    
+
     // Resize to tablet
     await page.setViewportSize({ width: 768, height: 1024 });
-    
+
     // Check updated size display
     await expect(page.locator('#width')).toHaveText('768');
     await expect(page.locator('#height')).toHaveText('1024');
-    
+
     // Resize to mobile
     await page.setViewportSize({ width: 375, height: 667 });
-    
+
     // Check updated size display
     await expect(page.locator('#width')).toHaveText('375');
     await expect(page.locator('#height')).toHaveText('667');
   });
-}); 
+});

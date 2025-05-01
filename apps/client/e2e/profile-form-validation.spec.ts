@@ -311,7 +311,7 @@ test.describe('Profile Form Validation', () => {
   test('should show form with all fields', async ({ page }) => {
     // Check if form is displayed
     await expect(page.locator('#profile-form')).toBeVisible();
-    
+
     // Check if all form fields are present
     await expect(page.locator('#username')).toBeVisible();
     await expect(page.locator('#email')).toBeVisible();
@@ -321,7 +321,7 @@ test.describe('Profile Form Validation', () => {
     await expect(page.locator('#website')).toBeVisible();
     await expect(page.locator('#receive-notifications')).toBeVisible();
     await expect(page.locator('#terms')).toBeVisible();
-    
+
     // Check if submit button is present
     await expect(page.locator('#submit-button')).toBeVisible();
   });
@@ -329,23 +329,23 @@ test.describe('Profile Form Validation', () => {
   test('should validate email format', async ({ page }) => {
     // Test with invalid email
     await page.fill('#email', 'invalid-email');
-    
+
     // Explicitly trigger validation
     await page.evaluate(() => {
       document.getElementById('email')?.dispatchEvent(new Event('blur'));
     });
-    
+
     // Error should be visible
     await expect(page.locator('#email-error')).toBeVisible();
-    
+
     // Test with valid email
     await page.fill('#email', 'valid@example.com');
-    
+
     // Explicitly trigger validation
     await page.evaluate(() => {
       document.getElementById('email')?.dispatchEvent(new Event('blur'));
     });
-    
+
     // Error should be hidden
     await expect(page.locator('#email-error')).not.toBeVisible();
   });
@@ -353,34 +353,34 @@ test.describe('Profile Form Validation', () => {
   test('should validate website URL format', async ({ page }) => {
     // Test with invalid URL
     await page.fill('#website', 'invalid-url');
-    
+
     // Explicitly trigger validation
     await page.evaluate(() => {
       document.getElementById('website')?.dispatchEvent(new Event('blur'));
     });
-    
+
     // Error should be visible
     await expect(page.locator('#website-error')).toBeVisible();
-    
+
     // Test with valid URL
     await page.fill('#website', 'https://example.com');
-    
+
     // Explicitly trigger validation
     await page.evaluate(() => {
       document.getElementById('website')?.dispatchEvent(new Event('blur'));
     });
-    
+
     // Error should be hidden
     await expect(page.locator('#website-error')).not.toBeVisible();
-    
+
     // Test with empty value (should be valid as it's optional)
     await page.fill('#website', '');
-    
+
     // Explicitly trigger validation
     await page.evaluate(() => {
       document.getElementById('website')?.dispatchEvent(new Event('blur'));
     });
-    
+
     // Error should be hidden
     await expect(page.locator('#website-error')).not.toBeVisible();
   });
@@ -390,25 +390,27 @@ test.describe('Profile Form Validation', () => {
     await page.fill('#username', 'testuser');
     await page.fill('#email', 'test@example.com');
     await page.check('#terms');
-    
+
     // Fill in optional fields
     await page.fill('#display-name', 'Test User');
     await page.fill('#bio', 'This is my test bio');
     await page.selectOption('#country', 'us');
     await page.fill('#website', 'https://example.com');
     await page.check('#receive-notifications');
-    
+
     // Submit the form
     await page.click('#submit-button');
-    
+
     // Check if success message is displayed
     await expect(page.locator('#form-submitted')).toBeVisible();
-    
+
     // Check if form data is displayed correctly
-    const submittedDataText = await page.locator('#submitted-data').textContent();
+    const submittedDataText = await page
+      .locator('#submitted-data')
+      .textContent();
     // Handle potential null value
     const data = submittedDataText ? JSON.parse(submittedDataText) : {};
-    
+
     expect(data.username).toBe('testuser');
     expect(data.email).toBe('test@example.com');
     expect(data.displayName).toBe('Test User');
@@ -423,18 +425,20 @@ test.describe('Profile Form Validation', () => {
     await page.fill('#username', 'minimaluser');
     await page.fill('#email', 'minimal@example.com');
     await page.check('#terms');
-    
+
     // Submit the form
     await page.click('#submit-button');
-    
+
     // Check if success message is displayed
     await expect(page.locator('#form-submitted')).toBeVisible();
-    
+
     // Check if form data is displayed correctly
-    const submittedDataText = await page.locator('#submitted-data').textContent();
+    const submittedDataText = await page
+      .locator('#submitted-data')
+      .textContent();
     // Handle potential null value
     const data = submittedDataText ? JSON.parse(submittedDataText) : {};
-    
+
     expect(data.username).toBe('minimaluser');
     expect(data.email).toBe('minimal@example.com');
     expect(data.displayName).toBeNull();
@@ -443,4 +447,4 @@ test.describe('Profile Form Validation', () => {
     expect(data.website).toBeNull();
     expect(data.receiveNotifications).toBe(false);
   });
-}); 
+});

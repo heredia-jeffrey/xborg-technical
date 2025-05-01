@@ -123,7 +123,9 @@ test.describe('HTTP Status Code Handling', () => {
     await page.setContent(getHtmlContent());
   });
 
-  test('should display loading state when sending request', async ({ page }) => {
+  test('should display loading state when sending request', async ({
+    page,
+  }) => {
     await page.getByRole('button', { name: 'Send Request' }).click();
     await expect(page.locator('#loading')).toBeVisible();
   });
@@ -131,11 +133,11 @@ test.describe('HTTP Status Code Handling', () => {
   test('should handle 200 OK response correctly', async ({ page }) => {
     await page.selectOption('#status-select', '200');
     await page.getByRole('button', { name: 'Send Request' }).click();
-    
+
     // Verify success UI elements
     await expect(page.locator('#success')).toBeVisible({ timeout: 3000 });
     await expect(page.locator('#error')).not.toBeVisible();
-    
+
     // Verify response data contains expected content
     const responseText = await page.locator('#response-data').textContent();
     expect(responseText).toContain('John Doe');
@@ -145,11 +147,11 @@ test.describe('HTTP Status Code Handling', () => {
   test('should handle 201 Created response correctly', async ({ page }) => {
     await page.selectOption('#status-select', '201');
     await page.getByRole('button', { name: 'Send Request' }).click();
-    
+
     // Verify success UI elements
     await expect(page.locator('#success')).toBeVisible({ timeout: 3000 });
     await expect(page.locator('#error')).not.toBeVisible();
-    
+
     // Verify response data contains expected content
     const responseText = await page.locator('#response-data').textContent();
     expect(responseText).toContain('New User');
@@ -159,55 +161,65 @@ test.describe('HTTP Status Code Handling', () => {
   test('should handle 400 Bad Request error correctly', async ({ page }) => {
     await page.selectOption('#status-select', '400');
     await page.getByRole('button', { name: 'Send Request' }).click();
-    
+
     // Verify error UI elements
     await expect(page.locator('#error')).toBeVisible({ timeout: 3000 });
     await expect(page.locator('#success')).not.toBeVisible();
-    await expect(page.locator('#error-message')).toHaveText('Invalid parameters provided');
+    await expect(page.locator('#error-message')).toHaveText(
+      'Invalid parameters provided'
+    );
   });
 
   test('should handle 401 Unauthorized error correctly', async ({ page }) => {
     await page.selectOption('#status-select', '401');
     await page.getByRole('button', { name: 'Send Request' }).click();
-    
+
     // Verify error UI elements
     await expect(page.locator('#error')).toBeVisible({ timeout: 3000 });
-    await expect(page.locator('#error-message')).toHaveText('Authentication required');
+    await expect(page.locator('#error-message')).toHaveText(
+      'Authentication required'
+    );
   });
 
   test('should handle 404 Not Found error correctly', async ({ page }) => {
     await page.selectOption('#status-select', '404');
     await page.getByRole('button', { name: 'Send Request' }).click();
-    
+
     // Verify error UI elements
     await expect(page.locator('#error')).toBeVisible({ timeout: 3000 });
-    await expect(page.locator('#error-message')).toHaveText('The requested resource does not exist');
+    await expect(page.locator('#error-message')).toHaveText(
+      'The requested resource does not exist'
+    );
   });
 
   test('should handle 500 Server Error correctly', async ({ page }) => {
     await page.selectOption('#status-select', '500');
     await page.getByRole('button', { name: 'Send Request' }).click();
-    
+
     // Verify error UI elements
     await expect(page.locator('#error')).toBeVisible({ timeout: 3000 });
-    await expect(page.locator('#error-message')).toHaveText('An unexpected error occurred on the server');
+    await expect(page.locator('#error-message')).toHaveText(
+      'An unexpected error occurred on the server'
+    );
   });
 
-  test('should clear results when clear button is clicked', async ({ page }) => {
+  test('should clear results when clear button is clicked', async ({
+    page,
+  }) => {
     // First make a request to show some data
     await page.getByRole('button', { name: 'Send Request' }).click();
     await expect(page.locator('#success')).toBeVisible({ timeout: 3000 });
-    
+
     // Then clear it
     await page.getByRole('button', { name: 'Clear Results' }).click();
-    
+
     // Verify all result elements are hidden
     await expect(page.locator('#loading')).not.toBeVisible();
     await expect(page.locator('#success')).not.toBeVisible();
     await expect(page.locator('#error')).not.toBeVisible();
-    
+
     // Verify response data is emptied
     const responseText = await page.locator('#response-data').textContent();
     expect(responseText).toBe('');
   });
-}); 
+});

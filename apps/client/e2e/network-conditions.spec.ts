@@ -130,12 +130,14 @@ test.describe('Network Condition Tests', () => {
     await expect(page.locator('#loading')).toBeVisible();
   });
 
-  test('should load and display data successfully under normal conditions', async ({ page }) => {
+  test('should load and display data successfully under normal conditions', async ({
+    page,
+  }) => {
     await page.getByRole('button', { name: 'Load Data' }).click();
-    
+
     // Wait for loading to complete and content to appear
     await expect(page.locator('#content')).toBeVisible({ timeout: 5000 });
-    
+
     // Verify data was loaded
     await expect(page.locator('#user-name')).toHaveText('John Doe');
     await expect(page.locator('#user-email')).toHaveText('john@xborg.com');
@@ -144,14 +146,16 @@ test.describe('Network Condition Tests', () => {
   test('should handle offline state gracefully', async ({ page }) => {
     // Set to offline mode
     await page.getByRole('button', { name: 'Simulate Offline' }).click();
-    
+
     // Try to load data
     await page.getByRole('button', { name: 'Load Data' }).click();
-    
+
     // Verify error message appears
     await expect(page.locator('#error')).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('#error-message')).toHaveText('Network connection unavailable');
-    
+    await expect(page.locator('#error-message')).toHaveText(
+      'Network connection unavailable'
+    );
+
     // Verify retry button appears
     await expect(page.locator('#retry-button')).toBeVisible();
   });
@@ -159,21 +163,21 @@ test.describe('Network Condition Tests', () => {
   test('should recover after connection is restored', async ({ page }) => {
     // Set to offline mode
     await page.getByRole('button', { name: 'Simulate Offline' }).click();
-    
+
     // Try to load data (will fail)
     await page.getByRole('button', { name: 'Load Data' }).click();
-    
+
     // Wait for error state
     await expect(page.locator('#error')).toBeVisible({ timeout: 5000 });
-    
+
     // Restore connection
     await page.getByRole('button', { name: 'Simulate Online' }).click();
-    
+
     // Try again with retry button
     await page.getByRole('button', { name: 'Retry' }).click();
-    
+
     // Verify data loads successfully
     await expect(page.locator('#content')).toBeVisible({ timeout: 5000 });
     await expect(page.locator('#user-name')).toHaveText('John Doe');
   });
-}); 
+});

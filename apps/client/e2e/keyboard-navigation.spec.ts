@@ -153,20 +153,22 @@ test.describe('Keyboard Navigation Tests', () => {
     await page.setContent(HTML_CONTENT);
   });
 
-  test('should focus elements in correct order with tab key', async ({ page }) => {
+  test('should focus elements in correct order with tab key', async ({
+    page,
+  }) => {
     // Get the expected tab order of focusable elements
     const expectedTabOrder = [
       'name',
-      'email', 
+      'email',
       'country',
       'message',
       'cancel-button',
-      'submit-button'
+      'submit-button',
     ];
-    
+
     // Start from the beginning of the page
     await page.keyboard.press('Tab');
-    
+
     // Check focus indicator for each element in order
     for (const elementId of expectedTabOrder) {
       await expect(page.locator('#focused-element')).toHaveText(elementId);
@@ -177,38 +179,38 @@ test.describe('Keyboard Navigation Tests', () => {
   test('should fill out form using only keyboard', async ({ page }) => {
     // Start by focusing on the first input field
     await page.focus('#name');
-    
+
     // Type in name
     await page.keyboard.type('John Doe');
-    
+
     // Tab to email field
     await page.keyboard.press('Tab');
     await page.keyboard.type('john@example.com');
-    
+
     // Tab to country dropdown
     await page.keyboard.press('Tab');
-    
+
     // Open dropdown with Space
     await page.keyboard.press('Space');
-    
+
     // Navigate down to select an option
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('ArrowDown'); // Move to "United States"
-    
+
     // Select with Enter
     await page.keyboard.press('Enter');
-    
+
     // Tab to message
     await page.keyboard.press('Tab');
     await page.keyboard.type('This is a test message sent using keyboard only');
-    
+
     // Tab to cancel button, then to submit button
     await page.keyboard.press('Tab');
     await page.keyboard.press('Tab');
-    
+
     // Submit the form with Enter
     await page.keyboard.press('Enter');
-    
+
     // Check if form was submitted
     await expect(page.locator('#submission-result')).toBeVisible();
     await expect(page.locator('#test-form')).not.toBeVisible();
@@ -218,21 +220,21 @@ test.describe('Keyboard Navigation Tests', () => {
     // Fill out the name field
     await page.focus('#name');
     await page.keyboard.type('To be canceled');
-    
+
     // Navigate to cancel button
     await page.keyboard.press('Tab'); // to email
     await page.keyboard.press('Tab'); // to country
     await page.keyboard.press('Tab'); // to message
     await page.keyboard.press('Tab'); // to cancel button
-    
+
     // Verify focus is on cancel button
     await expect(page.locator('#focused-element')).toHaveText('cancel-button');
-    
+
     // Press enter to cancel
     await page.keyboard.press('Enter');
-    
+
     // Verify fields are cleared and focus returned to name
     await expect(page.locator('#name')).toHaveValue('');
     await expect(page.locator('#focused-element')).toHaveText('name');
   });
-}); 
+});

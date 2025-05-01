@@ -201,13 +201,15 @@ test.describe('Profile Form Tests (Simplified)', () => {
     await expect(page.locator('#submit-button')).toBeVisible();
   });
 
-  test('should not submit form with empty required fields', async ({ page }) => {
+  test('should not submit form with empty required fields', async ({
+    page,
+  }) => {
     // Try to submit without filling required fields
     await page.click('#submit-button');
-    
+
     // Success message should not be visible
     await expect(page.locator('#form-submitted')).not.toBeVisible();
-    
+
     // Form should still be visible
     await expect(page.locator('#profile-form')).toBeVisible();
   });
@@ -215,10 +217,10 @@ test.describe('Profile Form Tests (Simplified)', () => {
   test('should show character count for bio field', async ({ page }) => {
     // Check initial count
     await expect(page.locator('#bio-count')).toHaveText('0/500');
-    
+
     // Type something
     await page.fill('#bio', 'Hello');
-    
+
     // Check count is updated
     await expect(page.locator('#bio-count')).toContainText('5/500');
   });
@@ -229,20 +231,21 @@ test.describe('Profile Form Tests (Simplified)', () => {
     await page.fill('#email', 'test@example.com');
     await page.fill('#bio', 'This is my test bio');
     await page.check('#terms');
-    
+
     // Submit the form
     await page.click('#submit-button');
-    
+
     // Check success message is displayed
     await expect(page.locator('#form-submitted')).toBeVisible();
-    
+
     // Form should be hidden
     await expect(page.locator('#profile-form')).not.toBeVisible();
-    
+
     // Verify submitted data
-    const dataText = await page.locator('#submitted-data').textContent() || '';
+    const dataText =
+      (await page.locator('#submitted-data').textContent()) || '';
     const data = JSON.parse(dataText);
     expect(data.username).toBe('testuser');
     expect(data.email).toBe('test@example.com');
   });
-}); 
+});
