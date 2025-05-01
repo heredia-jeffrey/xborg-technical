@@ -26,7 +26,7 @@ const App = ({
     <UserSessionProvider>
       <CacheProvider value={emotionCache}>
         <Head>
-          <title>XBorg</title>
+          <title>Xborg</title>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
         </Head>
         <ThemeProvider theme={theme}>

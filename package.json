@@ -2,19 +2,27 @@
   "private": true,
   "scripts": {
     "build": "turbo run build --filter=./apps/* --filter=./packages/*",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --filter=./apps/*",
     "lint": "turbo run lint --filter=./apps/* --filter=./packages/*",
-    "test": "cd apps/api && yarn test",
+    "test": "yarn test:unit && yarn test:e2e:simple",
+    "test:full": "yarn test:unit && yarn test:e2e",
+    "test:unit": "cd apps/api && yarn test",
+    "test:e2e": "cd apps/client && npx playwright test",
+    "test:e2e:simple": "cd apps/client && yarn test:e2e:simple",
+    "test:e2e:fixed": "cd apps/client && npx playwright test e2e/accessibility.spec.ts e2e/login-validation.spec.ts",
+    "test:e2e:old": "concurrently --kill-others \"turbo run dev --filter=./apps/client --filter=./apps/api\" \"wait-on --timeout 30000 http://localhost:3000 && cd apps/client && yarn test:e2e:no-server\"",
     "format": "prettier --write \"**/*.{ts,tsx,md,yml}\"",
     "prepare": "husky install",
     "start:local:infra": "docker compose --file .local/docker-compose.yml up --detach"
   },
   "devDependencies": {
     "@turbo/gen": "1.9.7",
+    "concurrently": "^8.2.0",
     "eslint": "7.32.0",
     "husky": "8.0.3",
     "prettier": "2.5.1",
-    "turbo": "latest"
+    "turbo": "latest",
+    "wait-on": "^7.0.1"
   },
   "name": "xborg-tech-challenge",
   "packageManager": "yarn@1.22.19",

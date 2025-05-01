@@ -193,4 +193,4 @@ describe('UserService - Special Characters', () => {
       expect(mockUserRepository.create.called).toBeFalsy();
     });
   });
-}); 
+});

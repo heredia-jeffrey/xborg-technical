@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:e2e": "playwright test --timeout=90000 --reporter=list",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:simple": "playwright test --config=playwright.simple.config.ts e2e/basic.spec.ts --reporter=list",
+    "test:e2e:no-server": "cross-env PLAYWRIGHT_TEST_BASE_URL=http://localhost:3000 playwright test --timeout=90000 --reporter=list",
+    "test:e2e:manual": "echo \"Please run 'npm run dev' in one terminal, then 'npx playwright test' in another"
   },
   "dependencies": {
     "@emotion/cache": "11.11.0",
@@ -30,12 +36,14 @@
     "yup": "1.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@types/js-cookie": "3.0.3",
     "@types/lodash": "^4.17.4",
     "@types/node": "20.3.1",
     "@types/react": "18.2.12",
     "@types/react-dom": "18.2.5",
     "@types/string-format": "^2.0.3",
+    "cross-env": "^7.0.3",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.5",
     "tsconfig": "*",

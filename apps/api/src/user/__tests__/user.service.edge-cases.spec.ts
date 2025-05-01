@@ -64,7 +64,7 @@ describe('UserService - Edge Cases', () => {
       const longLocalPart = 'a'.repeat(64);
       const longDomain = 'd'.repeat(63) + '.com'; // Domain parts limited to 63, with dots
       const longEmail = `${longLocalPart}@${longDomain}`;
-      
+
       const requestWithLongEmail = {
         ...validSignupRequest,
         email: longEmail,
@@ -101,7 +101,7 @@ describe('UserService - Edge Cases', () => {
       // Long first and last names (50 characters each)
       const longFirstName = 'First'.repeat(10);
       const longLastName = 'Last'.repeat(10);
-      
+
       const requestWithLongNames = {
         ...validSignupRequest,
         firstName: longFirstName,
@@ -170,7 +170,7 @@ describe('UserService - Edge Cases', () => {
 
       // Empty string email should pass validation since it's treated as not provided
       await userService.signup(requestWithEmptyEmail);
-      
+
       expect(mockUserRepository.create.calledOnce).toBeTruthy();
     });
   });
@@ -209,7 +209,7 @@ describe('UserService - Edge Cases', () => {
       const createArgs = mockUserRepository.create.firstCall.args[0];
       expect(createArgs.userName).toEqual('user名字');
     });
-    
+
     it('should accept IDN email domains (Punycode)', async () => {
       mockUserRepository.exists.resolves(false);
       mockUserRepository.create.resolves(mockUser);
@@ -226,4 +226,4 @@ describe('UserService - Edge Cases', () => {
       expect(createArgs.email).toEqual('user@例子.测试');
     });
   });
-}); 
+});
