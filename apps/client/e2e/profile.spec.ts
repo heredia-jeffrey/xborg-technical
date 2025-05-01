@@ -117,50 +117,52 @@ test.describe('Profile Page', () => {
   test('should display user profile information', async ({ page }) => {
     // Verify page title
     await expect(page).toHaveTitle(/XBorg - Profile/);
-    
+
     // Verify heading
     await expect(page.getByRole('heading', { name: 'Profile' })).toBeVisible();
-    
+
     // Verify profile data is visible
     await expect(page.getByText('Username')).toBeVisible();
     await expect(page.locator('#username')).toBeVisible();
     await expect(page.locator('#username')).toHaveText('xborg_user');
-    
+
     await expect(page.getByText('First name')).toBeVisible();
     await expect(page.locator('#firstname')).toBeVisible();
     await expect(page.locator('#firstname')).toHaveText('John');
-    
+
     await expect(page.getByText('Last name')).toBeVisible();
     await expect(page.locator('#lastname')).toBeVisible();
     await expect(page.locator('#lastname')).toHaveText('Doe');
-    
+
     await expect(page.getByText('Email')).toBeVisible();
     await expect(page.locator('#email')).toBeVisible();
     await expect(page.locator('#email')).toHaveText('john.doe@example.com');
-    
+
     await expect(page.getByText('Location')).toBeVisible();
     await expect(page.locator('#location')).toBeVisible();
     await expect(page.locator('#location')).toHaveText('New York');
   });
 
-  test('should navigate to login page when clicking logout', async ({ page }) => {
+  test('should navigate to login page when clicking logout', async ({
+    page,
+  }) => {
     // Get the logout button
     const logoutButton = page.locator('#logout-button');
-    
+
     // Check the button is visible
     await expect(logoutButton).toBeVisible();
-    
+
     // Set up a navigation promise
     const navigationPromise = page.waitForNavigation();
-    
+
     // Click logout button
     await logoutButton.click();
-    
+
     // Wait for navigation to complete
     await navigationPromise;
-    
+
     // Verify we're on the login page
     await expect(page).toHaveTitle(/XBorg - Login/);
     await expect(page.getByText('Login to')).toBeVisible();
   });
-}); 
+});

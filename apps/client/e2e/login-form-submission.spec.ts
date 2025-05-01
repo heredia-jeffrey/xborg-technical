@@ -105,8 +105,8 @@ test.describe('Login Form Submission', () => {
           token: 'fake-session-token',
           user: {
             userName: 'xborg_user',
-            email: 'user@example.com'
-          }
+            email: 'user@example.com',
+          },
         }),
       });
     });
@@ -139,14 +139,16 @@ test.describe('Login Form Submission', () => {
   test('should display login form elements', async ({ page }) => {
     // Verify page title
     await expect(page).toHaveTitle(/XBorg - Login/);
-    
+
     // Verify heading
     await expect(page.getByText('Login to')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Xborg' })).toBeVisible();
-    
+
     // Verify login button
-    await expect(page.getByRole('button', { name: 'Login with Metamask' })).toBeVisible();
-    
+    await expect(
+      page.getByRole('button', { name: 'Login with Metamask' })
+    ).toBeVisible();
+
     // Verify signup link
     await expect(page.getByText('Dont have an account?')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Sign up' })).toBeVisible();
@@ -155,45 +157,53 @@ test.describe('Login Form Submission', () => {
   test('should submit form and show success message', async ({ page }) => {
     // Click the login button (no need for navigation promise as that can be flaky)
     await page.getByRole('button', { name: 'Login with Metamask' }).click();
-    
+
     // Verify button text changes during submission
-    await expect(page.getByRole('button', { name: 'Connecting...' })).toBeVisible();
-    
+    await expect(
+      page.getByRole('button', { name: 'Connecting...' })
+    ).toBeVisible();
+
     // Wait for success message (with longer timeout)
-    await expect(page.locator('#success-message')).toBeVisible({ timeout: 2000 });
-    
+    await expect(page.locator('#success-message')).toBeVisible({
+      timeout: 2000,
+    });
+
     // Allow time for the page to process before checking navigation
     await page.waitForTimeout(200);
-    
+
     // Verify we're on the profile page
     await expect(page).toHaveTitle(/XBorg - Profile/);
   });
 
-  test('should navigate to signup page when clicking signup link', async ({ page }) => {
+  test('should navigate to signup page when clicking signup link', async ({
+    page,
+  }) => {
     // Click the signup link (no need for navigation promise)
     await page.getByRole('link', { name: 'Sign up' }).click();
-    
+
     // Verify we're on the signup page
     await expect(page).toHaveTitle(/XBorg - Sign Up/);
     await expect(page.getByText('Sign up to')).toBeVisible();
   });
-  
+
   test('should handle login error scenario', async ({ page }) => {
     // Modify the page to simulate an error
     await page.evaluate(() => {
       // Override the submit handler to show error
-      document.getElementById('login-form').onsubmit = function(e) {
+      document.getElementById('login-form').onsubmit = function (e) {
         e.preventDefault();
         document.getElementById('error-message').style.display = 'block';
         return false;
       };
     });
-    
+
     // Click the login button
     await page.getByRole('button', { name: 'Login with Metamask' }).click();
-    
+
     // Verify error message appears
     await expect(page.locator('#error-message')).toBeVisible();
-    await expect(page.locator('#error-message')).toHaveText('Login failed. Please try again.');
+    await expect(page.locator('#error-message')).toHaveText(
+      'Login failed. Please try again.'
+    );
   });
-}); 
+});

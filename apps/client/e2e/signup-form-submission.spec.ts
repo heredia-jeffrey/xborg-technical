@@ -24,23 +24,25 @@ test.describe('Signup Form Submission', () => {
         </body>
       </html>
     `);
-    
+
     // Verify page title
     await expect(page).toHaveTitle(/XBorg - Sign Up/);
-    
+
     // Verify heading
     await expect(page.getByText('Sign up to')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Xborg' })).toBeVisible();
-    
+
     // Verify form fields
     await expect(page.getByLabel('Username')).toBeVisible();
     await expect(page.getByLabel('Email address')).toBeVisible();
     await expect(page.getByLabel('First name')).toBeVisible();
     await expect(page.getByLabel('Last name')).toBeVisible();
-    
+
     // Verify signup button
-    await expect(page.getByRole('button', { name: 'Sign up with Metamask' })).toBeVisible();
-    
+    await expect(
+      page.getByRole('button', { name: 'Sign up with Metamask' })
+    ).toBeVisible();
+
     // Verify login link
     await expect(page.getByText('Already have an account?')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
@@ -75,19 +77,22 @@ test.describe('Signup Form Submission', () => {
         </body>
       </html>
     `);
-    
+
     // Manually fire the validation
     await page.evaluate(() => {
       // This will trigger invalid event and our handler
       document.getElementById('submit-btn').click();
       // Explicitly set the validation message
-      document.getElementById('validation-result').textContent = 'Username is required';
+      document.getElementById('validation-result').textContent =
+        'Username is required';
     });
-    
+
     // Check validation message appears
-    await expect(page.locator('#validation-result')).toHaveText('Username is required');
+    await expect(page.locator('#validation-result')).toHaveText(
+      'Username is required'
+    );
   });
-  
+
   test('should validate email format', async ({ page }) => {
     // Create a simple form with client-side validation
     await page.setContent(`
@@ -111,15 +116,17 @@ test.describe('Signup Form Submission', () => {
         </body>
       </html>
     `);
-    
+
     // Fill invalid email and submit
     await page.fill('#email', 'invalid-email');
     await page.click('button');
-    
+
     // Check validation message appears
-    await expect(page.locator('#validation-result')).toHaveText('Must be a valid email');
+    await expect(page.locator('#validation-result')).toHaveText(
+      'Must be a valid email'
+    );
   });
-  
+
   test('should submit successfully with valid data', async ({ page }) => {
     // Create a simple form with success behavior
     await page.setContent(`
@@ -144,25 +151,29 @@ test.describe('Signup Form Submission', () => {
         </body>
       </html>
     `);
-    
+
     // Fill form with valid data
     await page.fill('#username', 'test_user');
     await page.fill('#email', 'test@example.com');
     await page.fill('#firstName', 'John');
     await page.fill('#lastName', 'Doe');
-    
+
     // Submit form
     await page.click('#submit-button');
-    
+
     // Verify button changes
     await expect(page.locator('#submit-button')).toHaveText('Connecting...');
-    
+
     // Verify success message
     await expect(page.locator('#success-message')).toBeVisible();
-    await expect(page.locator('#success-message')).toHaveText('Signup successful!');
+    await expect(page.locator('#success-message')).toHaveText(
+      'Signup successful!'
+    );
   });
 
-  test('should navigate to login page when clicking login link', async ({ page }) => {
+  test('should navigate to login page when clicking login link', async ({
+    page,
+  }) => {
     // Create a simple page with login link
     await page.setContent(`
       <html>
@@ -179,12 +190,12 @@ test.describe('Signup Form Submission', () => {
         </body>
       </html>
     `);
-    
+
     // Click login link
     await page.click('#login-link');
-    
+
     // Verify we're on the login page
     await expect(page).toHaveTitle(/XBorg - Login/);
     await expect(page.getByText('Login to')).toBeVisible();
   });
-}); 
+});

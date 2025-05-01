@@ -100,23 +100,28 @@ E2E tests verify the entire application flow from the user's perspective. This p
    - **Profile Page Tests**: Test user profile functionality including data display and logout
    - **User Journey Tests**: Test complete flows from login/signup through to profile viewing
    - **Basic Tests**: Simple smoke tests for basic application functionality
+   - **Edge Case Tests**: Test error handling and edge cases for various user interactions
+   - **API Error Tests**: Test application's ability to handle various API error responses
 
 #### Comprehensive E2E Test Suite
 
 The E2E test suite has been expanded to include thorough testing of all major user flows:
 
 1. **Profile Page Testing** (`profile.spec.ts`):
+
    - Verifies user profile data is displayed correctly
    - Tests logout functionality
    - Confirms authentication state handling
 
 2. **Login Form Submission** (`login-form-submission.spec.ts`):
+
    - Tests successful login form submission
    - Validates error handling during login attempts
    - Confirms proper UI state changes during the login process
    - Tests navigation between login and signup pages
 
 3. **Signup Form Submission** (`signup-form-submission.spec.ts`):
+
    - Tests successful signup with valid user data
    - Validates form field requirements
    - Tests email format validation
@@ -124,6 +129,7 @@ The E2E test suite has been expanded to include thorough testing of all major us
    - Tests navigation between signup and login pages
 
 4. **Form Validation** (`login-validation.spec.ts`, `signup-validation.spec.ts`):
+
    - Tests validation of required fields
    - Validates input format requirements
    - Tests error message display
@@ -133,11 +139,27 @@ The E2E test suite has been expanded to include thorough testing of all major us
    - Tests proper page structure and element accessibility
    - Confirms navigation paths between all application pages
 
+6. **Edge Cases Testing** (`login-edge-cases.spec.ts`, `signup-edge-cases.spec.ts`):
+   - Tests scenarios where Metamask is not installed
+   - Tests network error handling during login/signup
+   - Tests handling of slow server responses
+   - Tests behavior when the wallet is already registered
+   - Tests rate limiting error handling
+   - Tests multiple submission attempt prevention
+
+7. **API Error Handling** (`api-errors.spec.ts`):
+   - Tests application's handling of various HTTP status codes (403, 404, 500)
+   - Tests timeout error handling
+   - Tests proper error message display for different error types
+   - Verifies consistent user experience during API failures
+
 All tests use advanced Playwright features for reliable testing:
+
 - Route mocking to simulate server responses
 - Waiting for UI state changes before proceeding
 - Proper isolation between tests
 - Resilient selectors for stable tests across UI changes
+- Direct DOM state manipulation for predictable test behavior
 
 ### Unit Tests
 
@@ -200,6 +222,14 @@ $ cd apps/client && npx playwright test e2e/profile.spec.ts
 $ cd apps/client && npx playwright test e2e/login-form-submission.spec.ts
 $ cd apps/client && npx playwright test e2e/signup-form-submission.spec.ts
 
+# Run new edge case test files
+$ cd apps/client && npx playwright test e2e/login-edge-cases.spec.ts
+$ cd apps/client && npx playwright test e2e/signup-edge-cases.spec.ts
+$ cd apps/client && npx playwright test e2e/api-errors.spec.ts
+
+# Run all edge case tests together
+$ cd apps/client && npx playwright test e2e/login-edge-cases.spec.ts e2e/signup-edge-cases.spec.ts e2e/api-errors.spec.ts
+
 # Run E2E tests with UI mode for debugging
 $ cd apps/client && npx playwright test --ui
 
@@ -223,6 +253,8 @@ $ cd apps/api && yarn test:cov
 - **Test Independence**: Each test file can run independently without side effects
 - **Robust Selectors**: E2E tests use robust element selectors that are less likely to break with UI changes
 - **Test Isolation**: Unit tests isolate components from their dependencies for focused testing
+- **Edge Case Coverage**: Tests explicitly cover error conditions and edge cases to ensure robust application behavior
+- **Simplified HTML Approach**: Edge case tests use simplified HTML mocks to focus on specific behaviors without complex page interactions
 
 ### Test Files Overview
 
@@ -236,6 +268,9 @@ $ cd apps/api && yarn test:cov
 - `signup-form-submission.spec.ts`: Tests for signup form submission process and validation
 - `profile.spec.ts`: Tests for user profile functionality and authentication state
 - `basic.spec.ts`: Basic smoke tests that don't require server connections
+- `login-edge-cases.spec.ts`: Tests for login error conditions and edge cases
+- `signup-edge-cases.spec.ts`: Tests for signup error conditions and edge cases
+- `api-errors.spec.ts`: Tests for handling various API error responses
 
 **Unit Test Files:**
 
